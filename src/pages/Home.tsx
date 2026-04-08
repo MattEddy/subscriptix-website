@@ -31,31 +31,43 @@ export default function Home() {
 
       {/* Section 2 */}
       <section className="py-12 md:py-16 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight tracking-tight">
+              Comprehensive data control and reporting features.
+            </h2>
+            <p className="mt-6 text-lg text-gray-600">
+              Generate models based on your historical subscriber retention
+              data, then customize them with powerful, easy-to-use tools like
+              seasonality adjustments and universal cohort modifiers.
+            </p>
+            <p className="mt-4 text-lg text-gray-600">
+              Quickly create different models for different future scenarios,
+              then use aggregated reporting to easily perform comparative
+              analyses.
+            </p>
+          </div>
+          <div className="relative">
             <img
-              src="/screenshot-parameters.png"
-              alt="Subscriptix parameters panel"
-              className="w-3/5 rounded-xl shadow-2xl border border-gray-200"
+              src="/screenshot-reactivations.png"
+              alt="Subscriptix reactivation model with data tables"
+              className="w-full rounded-xl shadow-2xl border border-gray-200"
             />
-            <div className="text-right">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight tracking-tight">
-                Comprehensive data control and reporting features.
-              </h2>
-              <p className="mt-6 text-lg text-gray-600">
-                Generate models based on your historical subscriber retention
-                data, then customize them with powerful, easy-to-use tools like
-                seasonality adjustments and universal cohort modifiers.
-              </p>
-              <p className="mt-4 text-lg text-gray-600">
-                Quickly create different models for different future scenarios,
-                then use aggregated reporting to easily perform comparative
-                analyses.
-              </p>
+            <div className="absolute bottom-[-12%] right-[-8%] flex items-end gap-2">
+              <img
+                src="/screenshot-parameters.png"
+                alt="Subscriptix parameters panel"
+                className="w-[28%] rounded-lg shadow-xl border border-gray-200"
+              />
               <img
                 src="/screenshot-aggregation.png"
                 alt="Subscriptix model aggregation"
-                className="mt-12 rounded-xl shadow-2xl border border-gray-200"
+                className="w-[34%] rounded-lg shadow-xl border border-gray-200"
+              />
+              <img
+                src="/screenshot-upload.png"
+                alt="Subscriptix upload data dialog"
+                className="w-[34%] rounded-lg shadow-xl border border-gray-200"
               />
             </div>
           </div>
