@@ -59,9 +59,19 @@ public/
 
 ## Recent Session
 
-**Date:** 2026-04-07
+**Date:** 2026-04-08
 **Branch:** main
 
+Reworked Section 2 ("Comprehensive data control") image layout into a montage.
+
+**Image montage (Section 2):**
+- Added two new screenshots to public/: reactivations, upload data
+- Replaced the previous two-image spread (parameters left, aggregation below text) with a 4-image montage on the left side
+- Reactivations screenshot is the main/background image; parameters, aggregation, and upload are overlaid as smaller cards
+- Iterated positioning across several rounds: moved montage to left column, shifted overlay images outward (~2/3 off the main image), adjusted aggregation +25px right and upload +60px right, right-justified the text
+- Two commits pushed to main, Vercel auto-deployed
+
+**Previous session (2026-04-07):**
 Polished the site for launch and deployed it live.
 
 **Design overhaul to match brand guide:**
@@ -72,7 +82,7 @@ Polished the site for launch and deployed it live.
 **Page restructure:**
 - Replaced the hero + feature cards + Excel section layout with three clean text+screenshot sections that alternate sides (zigzag pattern). Matt provided specific copy for each section.
 - Section 1: "Financial modeling and analytics..." + main app screenshot (text left, image right)
-- Section 2: "Comprehensive data control..." + parameters screenshot (left) with aggregation screenshot below the text (right). Text is right-justified. Iterated on image layout — Matt wanted no overlap, parameters upper-left, aggregation below the text block.
+- Section 2: "Comprehensive data control..." + image montage (left) with right-justified text (right). Montage: reactivations screenshot as main background, with parameters/aggregation/upload screenshots overlaid as a collage — individually positioned so ~2/3 hangs off the main image. Iterated on exact positioning across multiple rounds.
 - Section 3: "Full Excel integration..." + Excel add-in screenshot (text left, image right)
 - Reduced section padding by half across the board.
 - Bottom CTA section retained.
@@ -86,7 +96,7 @@ Polished the site for launch and deployed it live.
 - Added custom domain `subscriptix.com` — walked through Squarespace DNS cleanup (removed old Squarespace A/CNAME records, kept Google Workspace email records and AWS NS records for app/dev subdomains). Added Vercel A record (`76.76.21.21`) and www CNAME (`cname.vercel-dns.com`). DNS propagated immediately, SSL provisioned, site live.
 
 ### Open Items / Next Steps
-- Consider different/better screenshots for each section (currently section 1 uses the same app screenshot as a placeholder)
+- Section 1 still uses the generic app screenshot — could use a more specific one
 - Could add product demo video or animations
 - Further brand polish if desired (the brand guide has additional UI patterns not yet used)
 - Squarespace subscription already cancelled — domain still registered there as DNS host
