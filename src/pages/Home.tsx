@@ -32,7 +32,29 @@ export default function Home() {
       {/* Section 2 */}
       <section className="py-12 md:py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-          <div>
+          <div className="relative">
+            <img
+              src="/screenshot-reactivations.png"
+              alt="Subscriptix reactivation model with data tables"
+              className="w-full rounded-xl shadow-2xl border border-gray-200"
+            />
+            <img
+              src="/screenshot-parameters.png"
+              alt="Subscriptix parameters panel"
+              className="absolute bottom-[-12%] left-[-16%] w-[28%] rounded-lg shadow-xl border border-gray-200"
+            />
+            <img
+              src="/screenshot-aggregation.png"
+              alt="Subscriptix model aggregation"
+              className="absolute bottom-[-27%] left-[calc(10%+25px)] w-[34%] rounded-lg shadow-xl border border-gray-200"
+            />
+            <img
+              src="/screenshot-upload.png"
+              alt="Subscriptix upload data dialog"
+              className="absolute bottom-[-27%] left-[calc(40%+60px)] w-[34%] rounded-lg shadow-xl border border-gray-200"
+            />
+          </div>
+          <div className="text-right">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight tracking-tight">
               Comprehensive data control and reporting features.
             </h2>
@@ -46,30 +68,6 @@ export default function Home() {
               then use aggregated reporting to easily perform comparative
               analyses.
             </p>
-          </div>
-          <div className="relative">
-            <img
-              src="/screenshot-reactivations.png"
-              alt="Subscriptix reactivation model with data tables"
-              className="w-full rounded-xl shadow-2xl border border-gray-200"
-            />
-            <div className="absolute bottom-[-12%] right-[-8%] flex items-end gap-2">
-              <img
-                src="/screenshot-parameters.png"
-                alt="Subscriptix parameters panel"
-                className="w-[28%] rounded-lg shadow-xl border border-gray-200"
-              />
-              <img
-                src="/screenshot-aggregation.png"
-                alt="Subscriptix model aggregation"
-                className="w-[34%] rounded-lg shadow-xl border border-gray-200"
-              />
-              <img
-                src="/screenshot-upload.png"
-                alt="Subscriptix upload data dialog"
-                className="w-[34%] rounded-lg shadow-xl border border-gray-200"
-              />
-            </div>
           </div>
         </div>
       </section>
