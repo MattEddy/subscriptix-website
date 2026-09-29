@@ -175,6 +175,30 @@ body {
 .welcome__more:hover span {
   transform: translateX(3px);
 }
+.welcome__row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+/* A cloud of real capabilities, in brand purple. Each term stays whole;
+   the separator rides at the end of the term before it. */
+.welcome__buzz {
+  margin: 0;
+  padding: 18px 22px;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.75;
+  color: #6D09BC;
+}
+.welcome__buzz li {
+  display: inline;
+  white-space: nowrap;
+}
+.welcome__buzz li::after {
+  content: " ";
+  white-space: normal;
+}
 .welcome__steps strong {
   color: #066FFC;
 }
@@ -189,9 +213,19 @@ body {
     align-self: flex-end;
     order: -1;
   }
+  .welcome__row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+  }
   .welcome__sheets {
-    align-self: flex-start;
     max-width: 320px;
+  }
+  .welcome__buzz {
+    max-width: 380px;
+    font-size: 14px;
+    text-align: right;
   }
   .welcome__hero {
     padding: 40px 52px;
