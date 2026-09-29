@@ -24,7 +24,7 @@ export default function Footer() {
         Terms of Service
       </a>
       <span className="mx-2.5">·</span>
-      &copy; {new Date().getFullYear()} Subscriptix
+      &copy; {new Date().getFullYear()} Sparrowstep LLC
     </footer>
   );
 }
