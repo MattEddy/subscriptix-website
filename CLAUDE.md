@@ -83,44 +83,32 @@ public/
 
 ## Recent Session
 
-**Date:** 2026-04-08
+**Date:** 2026-09-28
 **Branch:** main
 
-Reworked Section 2 ("Comprehensive data control") image layout into a montage.
+Rebuilt the whole site in one long session, from "can we find the old login-page animation?" to a pre-rendered, SEO-ready site with its own email backend. All pushed and live.
 
-**Image montage (Section 2):**
-- Added two new screenshots to public/: reactivations, upload data
-- Replaced the previous two-image spread (parameters left, aggregation below text) with a 4-image montage on the left side
-- Reactivations screenshot is the main/background image; parameters, aggregation, and upload are overlaid as smaller cards
-- Iterated positioning across several rounds: moved montage to left column, shifted overlay images outward (~2/3 off the main image), adjusted aggregation +25px right and upload +60px right, right-justified the text
-- Two commits pushed to main, Vercel auto-deployed
+**The lost animation.** Matt remembered a pulsing, growing faded logomark on the app's login page and thought Jon's working-login rewrite had dropped it. Git history plus the 2026-05-01 handoff log showed otherwise: a slow-zoom animation was workshopped that day and Matt vetoed it ("Nope. Too much."), so it never reached git; the transcript holding it had been pruned (Claude Code keeps ~30 days). Rebuilt it from the description for the marketing site instead, then tuned: first a bold 14 s zoom-and-fade, then a back-and-forth pulse, finally **~57%↔80% of screen width, 20 s each way** (Matt: 35 s was "a little slow", 28 s too; 20 s landed).
 
-**Previous session (2026-04-07):**
-Polished the site for launch and deployed it live.
+**The redesign — "match the login screen".** Matt: *"change the overall formatting of the page to match the login screen. IE, hovering cards. Subscriptix nameplate in the upper left, menu card in the upper right, and a set of content cards in the middle of the screen, forming a 'scene'."* Goals he set: each scene fits one laptop screen, and a *"centered, zen flow"* feel in design and transitions. Built as a fixed frame + scenes with View Transitions (old scene fades, new cards drift in one by one).
+- **Welcome** (was "About"): started as a centered screenshot with text cards hovering over it; Matt cut the screenshot, then asked for no overlapping cards, bigger hero, deeper shadows (+50%), a two-line hero with bold phrases, and a diagonal of side cards (Connect/Generate/In seconds upper right; "Create supercharged models…" lower left with a solid-blue Learn More → Features). Added a purple capability-terms card lower right (14 px, 380 px wide) — doubles as visible search terms.
+- **Features**: Matt was unsure how to present eight features; I argued against a carousel and proposed borrowing the app's rail + stage layout. Iterated to: FEATURES label card + one bold card-button per feature (selected = solid blue), caption card above the screenshot (20 px), no titles or step arrows in the caption. Copy drafted from the app repo's actual code/docs (connector registry, Claude-based comprehension engine, Excel mirror docs) with Matt's edits; added "Split & classify" from an unlisted screenshot.
+- **Pricing**: invitation-only card → Contact Us. **Contact Us**: form in a card, new Message field, intro hidden after sending.
+- **Menu**: About removed — Matt: *"this isn't really 'about' so much as 'Welcome'… maybe the nameplate is enough?"* The nameplate is the way home.
+- **404**: friendly "Nothing to see here." scene, real 404 status.
 
-**Design overhaul to match brand guide:**
-- Reviewed the Subscriptix Brand Kit PDF and updated everything to conform: swapped font from Inter to Assistant, updated color palette from indigo to brand blue (#066FFC) with purple (#6D09BC), replaced the CSS placeholder logo with the real brand logomark+wordmark PNG (`logo-main-dark.png`), swapped favicon to the gradient S logomark (`logomark-main.png`).
-- Replaced all inline SVG icons with brand icons from the Subscriptix icon set.
-- Made all sections dark-on-light (removed the dark gradient hero and CTA backgrounds).
+**Contact form → Subscriptix SES.** The Apps Script backend used `no-cors`, so it could never report a failure. Replaced with `api/contact.ts` (Vercel function → SES on the Subscriptix AWS account, the identity the app already verified). Walked Matt through a new send-only IAM user (`subscriptix-website-contact`, inline policy `send-as-noreply-only`) and four Vercel env vars; `CONTACT_TO` takes a comma-separated list. Tested every path locally with fake creds (fake key → 502, never a false "thank you"); Matt sent a real message — delivered.
 
-**Page restructure:**
-- Replaced the hero + feature cards + Excel section layout with three clean text+screenshot sections that alternate sides (zigzag pattern). Matt provided specific copy for each section.
-- Section 1: "Financial modeling and analytics..." + main app screenshot (text left, image right)
-- Section 2: "Comprehensive data control..." + image montage (left) with right-justified text (right). Montage: reactivations screenshot as main background, with parameters/aggregation/upload screenshots overlaid as a collage — individually positioned so ~2/3 hangs off the main image. Iterated on exact positioning across multiple rounds.
-- Section 3: "Full Excel integration..." + Excel add-in screenshot (text left, image right)
-- Reduced section padding by half across the board.
-- Bottom CTA section retained.
+**Softening the jump to the app's login.** Clicking Login fades the scene before navigating; Back never restores a blank page (`pageshow`); the mark's phase is keyed to the clock so it can match across sites. A true cross-document transition is impossible (different origin).
 
-**Contact form:**
-- Replaced the `mailto:` hack with a Google Apps Script backend. Matt created the script in his Google Workspace account, deployed it as a web app. Form POSTs JSON to the Apps Script URL, which sends an email notification. Matt later changed the recipient email in the script.
+**SEO / AI search.** Found every URL served an empty `<div id="root">` (AI crawlers see nothing), no robots/sitemap, no preview tags, and `www` + apex both serving the full site. Now: build-time pre-render of every scene (`scripts/prerender.mjs`), per-scene titles/descriptions/canonicals/OG + share image, JSON-LD, `robots.txt`, `sitemap.xml`, `llms.txt`, `www` → apex 308. Matt asked to hide search terms; advised against hidden keyword lists (ignored/penalized) and put accurate terms in structured data + meta descriptions, and he chose the visible purple term card. Walked him through Google Search Console DNS verification (he'd pasted the token into Squarespace's *Name* field; it belongs in *Text* with Name `@`); verified live via `dig`.
 
-**Deployment:**
-- Initialized git repo, pushed to `MattEddy/subscriptix-website` on GitHub.
-- Deployed to Vercel via CLI (`vercel --prod --yes`), auto-connected to GitHub for future deploys.
-- Added custom domain `subscriptix.com` — walked through Squarespace DNS cleanup (removed old Squarespace A/CNAME records, kept Google Workspace email records and AWS NS records for app/dev subdomains). Added Vercel A record (`76.76.21.21`) and www CNAME (`cname.vercel-dns.com`). DNS propagated immediately, SSL provisioned, site live.
+**Files:** everything under `src/` (new `App.tsx`, `entry-server.tsx`, `seo.ts`, `scenes/*`), `api/contact.ts`, `scripts/prerender.mjs`, `index.html`, `vercel.json`, `public/` (`mark.svg`, `shots/`, `og-image.png`, `robots.txt`, `llms.txt`; old screenshots/icons deleted), `CLAUDE.md` rewritten.
 
 ### Open Items / Next Steps
-- Section 1 still uses the generic app screenshot — could use a more specific one
-- Could add product demo video or animations
-- Further brand polish if desired (the brand guide has additional UI patterns not yet used)
-- Squarespace subscription already cancelled — domain still registered there as DNS host
+- **Step 3 — dress the app's sign-in pages in the site's frame** (Matt: "knock out 3 when we come back"). Lives in the **app repo** (`~/Code/subscriptix`, branch `CME-dev`; worth a heads-up to Jon, who built the auth flow): the allauth layouts (`accounts/templates/allauth/layouts/`) + `src/styles/_rail-and-auth.scss`. Add the menu card (Features · Pricing · Contact Us → `https://subscriptix.com/…`, **Login** shown active), nameplate linking to `https://subscriptix.com`, the breathing mark with the **exact numbers in "Design" above** (incl. the clock-phase script), the card drift-in, and the footer line. The menu then exists in two codebases — note it in both.
+- **Delete the old Google Apps Script deployment** (script.google.com) — the SES form is confirmed working.
+- **Search Console:** submit `sitemap.xml` if not done; check Pages/Performance in a few days.
+- **Optional:** a tighter Reports screenshot (the wide strip renders small); a larger Services grab (original is 1106 px); a Google Sheets screenshot once the add-on exists.
+- **Undecided:** whether visible captions should carry more search terms (e.g. "cohort" in Retention modeling, "churn" in Compare) — Matt didn't pick.
+- **Unanswered:** untrack `.DS_Store` and add it to `.gitignore`?
