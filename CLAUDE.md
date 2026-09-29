@@ -4,31 +4,52 @@ Marketing splash site for Subscriptix (subscription cohort projection tool). Rep
 
 ## Stack
 - Vite + React + TypeScript
-- Tailwind CSS v4 (via `@tailwindcss/vite` plugin)
-- React Router DOM v7 (two routes: `/` and `/contact`)
-- Deployed to Vercel (`vercel.json` handles SPA rewrites)
+- Tailwind CSS v4 (via `@tailwindcss/vite` plugin), plus hand-written component CSS in `src/index.css`
+- React Router DOM v7: scenes at `/`, `/features`, `/pricing`, `/contact`
+- Pre-rendered at build time (see SEO below), then hydrated in the browser
+- Deployed to Vercel (`vercel.json`: `cleanUrls`, `www` → apex redirect, SPA rewrite that skips `/api/`)
+
+## Design: floating-card scenes
+Matches the app's sign-in screen. A fixed **frame** (nameplate card upper left → home; menu card upper right: Features · Pricing · Contact Us · Login; small footer line) over a giant faded **breathing logomark**, with a **scene** of floating cards in the middle. No "About"/"Home" menu item — the nameplate is the way home.
+- Scene change: `NavLink`/`Link` with `viewTransition` → the old scene fades (`::view-transition-old(scene)`), new cards drift in one after another (`.scene-card` + `--i` stagger)
+- Features swaps panels the same way, fading only the stage (`stage-swap` class keeps the scene still)
+- Login fades the scene out (`html.leaving`) before leaving for the app; a `pageshow` handler clears it so Back never restores a blank page
+- **The breathing mark (shared contract with the app's sign-in page, which should match it):** `.bg-mark` is `80vw` wide, `scale(0.708)` ↔ `scale(1)`, opacity `0.2`, `20s ease-in-out infinite alternate` (a 40 s cycle), phase keyed to the clock via `animation-delay: var(--mark-delay)`, where an inline script in `index.html` sets `--mark-delay = -((Date.now()/1000) % 40)s` before first paint
+- Card shadow: `0 1px 2px / 0 8px 20px / 0 20px 40px` in `rgba(10,11,15, .09/.105/.105)`; solid button `.button-solid` (`#055cda`)
 
 ## Structure
 ```
+index.html          — head template: <!--seo--> and <!--app--> markers, mark-phase script
 src/
-  main.tsx          — Router setup, two routes
-  index.css         — Tailwind import + brand color theme
+  main.tsx          — BrowserRouter; hydrates pre-rendered HTML, else renders
+  App.tsx           — the routes (shared by browser and build-time render)
+  entry-server.tsx  — renderToString per route, for the prerender step
+  seo.ts            — per-scene title + description, structured data (single source)
+  index.css         — Tailwind, brand theme, frame, scenes, animations
   components/
-    Layout.tsx      — Shell: Header + Outlet + Footer
-    Header.tsx      — Sticky frosted-glass nav (brand logo image, Learn More, Login)
-    Footer.tsx      — Contact email, LinkedIn, copyright
-  pages/
-    Home.tsx        — Three text+screenshot sections, bottom CTA
-    LearnMore.tsx   — Contact page with name/email form (Google Apps Script)
+    Layout.tsx      — mark + Header + scene <main> + Footer; syncs document.title
+    Header.tsx      — nameplate card + menu card; Login fade-out
+    Footer.tsx      — email · LinkedIn · ©
+  scenes/
+    Welcome.tsx     — headline card, two side cards on a diagonal, purple capability terms
+    Features.tsx    — rail of feature cards + a panel per feature (all in the DOM, one shown)
+    Pricing.tsx     — invitation-only card → Contact Us
+    Contact.tsx     — contact form (→ /api/contact)
+api/contact.ts      — Vercel function: contact form → SES
+scripts/prerender.mjs — writes dist/<scene>.html with real content + head tags, and sitemap.xml
 public/
-  logo.png                  — Brand logo (logomark + wordmark, dark, from brand kit)
-  favicon.png               — Logomark (gradient S, from brand kit)
-  screenshot-app.png        — Main app screenshot (retention curves view)
-  screenshot-parameters.png — Parameters panel screenshot
-  screenshot-aggregation.png — Model aggregation dialog screenshot
-  screenshot-excel.png      — Excel add-in screenshot
-  icons/                    — Brand SVG icons (line-chart, duplicate, model, parameters)
+  mark.svg          — gradient logomark (the breathing background)
+  logo.png, favicon.png
+  shots/            — Features screenshots (source: ~/Documents/…/Subscriptix/September 2026 Website Elements/)
+  og-image.png      — 1200×630 link-preview image
+  robots.txt, llms.txt
 ```
+
+## SEO / AI search
+- The site is a client-rendered React app, so the build (`npm run build`) runs `scripts/prerender.mjs`: each scene is rendered to real HTML, so crawlers that don't run JavaScript (most AI crawlers) see the words. Features puts all eight panels in the HTML (hidden except the selected one) so every description is indexable.
+- Each page gets its own title, description, canonical URL (apex `https://subscriptix.com`), Open Graph + Twitter tags; the home page also carries JSON-LD (Organization + SoftwareApplication with `featureList`). Edit these in `src/seo.ts`.
+- Keep search terms accurate and in sentences — never hidden keyword lists (cloaking/spammy markup penalties). The visible purple term card on Welcome is where search terms belong.
+- To regenerate the share image, it was rendered from an HTML mock of the Welcome headline card at 1200×630 (Chrome screenshot).
 
 ## Brand
 - Brand guide PDF: `~/Documents/03 Active Professional/Software/Subscriptix/Design - General/Brand Elements/subcriptix/Subscriptix ❖ Brand Kit + UI.pdf`
@@ -57,8 +78,8 @@ public/
 - DNS managed in Squarespace (domain registrar) — also has Google Workspace email records (SPF, DKIM) and AWS NS records for `app`/`dev` subdomains
 
 ## Notes
-- Brand icons from `~/Documents/03 Active Professional/Software/Subscriptix/Design - General/Icons/` — currently only 4 copied to public/icons, but full set available there
-- Screenshots from `~/Documents/03 Active Professional/Software/Subscriptix/Website/Website Refresh 2025-04-15/`
+- Brand icon set: `~/Documents/03 Active Professional/Software/Subscriptix/Design - General/Icons/` (none currently used)
+- Current screenshots: `~/Documents/03 Active Professional/Software/Subscriptix/September 2026 Website Elements/` (copied into `public/shots/`, resized to ≤2000 px wide — never upscale the smaller ones)
 
 ## Recent Session
 

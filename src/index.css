@@ -41,8 +41,11 @@ body {
   user-select: none;
   opacity: 0.2;
   transform: translate(-50%, -50%) scale(0.708);
-  /* 20 s each way = a 40 s cycle; Layout.tsx keys its phase to the clock. */
+  /* 20 s each way = a 40 s cycle. --mark-delay (set by a script in
+     index.html) keys the phase to the clock, so the mark is at the same point
+     on every page, including the app's sign-in page. */
   animation: bg-mark-pulse 20s ease-in-out infinite alternate;
+  animation-delay: var(--mark-delay, 0s);
   will-change: transform;
 }
 
@@ -292,6 +295,9 @@ body {
   gap: 16px;
   min-width: 0;
   view-transition-name: stage;
+}
+.features__stage[hidden] {
+  display: none;
 }
 .features__shot {
   margin: 0;

@@ -11,7 +11,7 @@ type Feature = {
 const features: Feature[] = [
   {
     title: "Connect a service",
-    img: "/features/services.png",
+    img: "/shots/services.png",
     alt: "Billing platforms Subscriptix connects to: Stripe, Chargebee, Recurly, RevenueCat and Paddle",
     body: (
       <>
@@ -22,7 +22,7 @@ const features: Feature[] = [
   },
   {
     title: "Import a file",
-    img: "/features/file-import.png",
+    img: "/shots/file-import.png",
     alt: "A transaction log CSV recognized and its columns mapped to the ledger",
     body: (
       <>
@@ -38,7 +38,7 @@ const features: Feature[] = [
   },
   {
     title: "Split & classify",
-    img: "/features/parse-data.png",
+    img: "/shots/parse-data.png",
     alt: "Routing data to models and classifying 48 subscription lapses as win-backs",
     body: (
       <>
@@ -50,7 +50,7 @@ const features: Feature[] = [
   },
   {
     title: "Source dashboard",
-    img: "/features/source-dashboard.png",
+    img: "/shots/source-dashboard.png",
     alt: "A data source flowing through import channels into three target models",
     body: (
       <>
@@ -61,7 +61,7 @@ const features: Feature[] = [
   },
   {
     title: "Retention modeling",
-    img: "/features/retention.png",
+    img: "/shots/retention.png",
     alt: "Baseline and adjusted retention curves with confidence intervals",
     body: (
       <>
@@ -73,7 +73,7 @@ const features: Feature[] = [
   },
   {
     title: "Compare",
-    img: "/features/compare.png",
+    img: "/shots/compare.png",
     alt: "Two models' outputs open side by side",
     body: (
       <>
@@ -84,7 +84,7 @@ const features: Feature[] = [
   },
   {
     title: "Reports",
-    img: "/features/reports.png",
+    img: "/shots/reports.png",
     alt: "An aggregated report combining two models' subscribers, cash and revenue by month",
     body: (
       <>
@@ -95,7 +95,7 @@ const features: Feature[] = [
   },
   {
     title: "Excel & Google Sheets",
-    img: "/features/excel.png",
+    img: "/shots/excel.png",
     alt: "A Subscriptix model mirrored into an Excel workbook beside the add-in panel",
     body: (
       <>
@@ -125,7 +125,6 @@ function swap(update: () => void) {
 
 export default function Features() {
   const [active, setActive] = useState(0);
-  const feature = features[active];
 
   const select = useCallback(
     (i: number) => {
@@ -134,13 +133,6 @@ export default function Features() {
     },
     [active]
   );
-
-  // Warm the cache so a swap never waits on an image.
-  useEffect(() => {
-    features.forEach((f) => {
-      new Image().src = f.img;
-    });
-  }, []);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -171,14 +163,24 @@ export default function Features() {
         ))}
       </nav>
 
-      <div key={active} className="features__stage">
-        <div className="features__text card scene-card" style={at(1)}>
-          <p>{feature.body}</p>
-        </div>
-        <figure className="features__shot card scene-card" style={at(2)}>
-          <img src={feature.img} alt={feature.alt} />
-        </figure>
-      </div>
+      {/* Every feature's panel is in the page (so the words are there for
+          search engines and screen readers); only the selected one shows.
+          A panel's cards drift in again each time it's revealed. */}
+      {features.map((f, i) => (
+        <section
+          key={f.title}
+          className="features__stage"
+          hidden={i !== active}
+          aria-label={f.title}
+        >
+          <div className="features__text card scene-card" style={at(1)}>
+            <p>{f.body}</p>
+          </div>
+          <figure className="features__shot card scene-card" style={at(2)}>
+            <img src={f.img} alt={f.alt} />
+          </figure>
+        </section>
+      ))}
     </div>
   );
 }

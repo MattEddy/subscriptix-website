@@ -1,0 +1,20 @@
+# Subscriptix
+
+> Financial modeling and analytics for subscription businesses. Subscriptix builds cohort-based forecasting models from a company's billing or transaction data, models churn and retention, and forecasts subscriber counts, revenue and cash. Currently available by invitation.
+
+## What it does
+
+- Connects to billing platforms (Stripe, Chargebee, Recurly, RevenueCat, Paddle) and keeps transaction history in sync automatically
+- Imports CSV or spreadsheet files, whether raw transaction logs or pre-built cohort tables; AI-powered parsers recognize the data type and map every column
+- Splits one data source into separate models by plan, channel or price, and detects lapsed-and-returned customers so the user decides whether they count as win-backs (reactivations) or new customers
+- Fits cohort retention curves with confidence intervals, adjustable with age-based and cohort-specific adjustments
+- Opens up to four models side by side to compare scenarios, segments or price points
+- Rolls any set of models into one combined forecast of subscribers, revenue and cash, month by month
+- Works inside Excel and Google Sheets with two-way sync between the spreadsheet and the app
+
+## Pages
+
+- [Home](https://subscriptix.com/): overview
+- [Features](https://subscriptix.com/features): each capability with a screenshot
+- [Pricing](https://subscriptix.com/pricing): currently by invitation
+- [Contact](https://subscriptix.com/contact): info@subscriptix.com, or the contact form

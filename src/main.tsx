@@ -1,24 +1,19 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createRoot, hydrateRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import "./index.css";
-import Layout from "./components/Layout";
-import Welcome from "./scenes/Welcome";
-import Features from "./scenes/Features";
-import Pricing from "./scenes/Pricing";
-import Contact from "./scenes/Contact";
+import App from "./App";
 
-createRoot(document.getElementById("root")!).render(
+const root = document.getElementById("root")!;
+const app = (
   <StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Welcome />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/contact" element={<Contact />} />
-        </Route>
-      </Routes>
+      <App />
     </BrowserRouter>
   </StrictMode>
 );
+
+// Built pages arrive pre-rendered (scripts/prerender.mjs), so React adopts the
+// existing HTML; the dev server serves an empty root and renders from scratch.
+if (root.firstElementChild) hydrateRoot(root, app);
+else createRoot(root).render(app);
