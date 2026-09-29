@@ -385,14 +385,14 @@ html.stage-swap::view-transition-old(scene) {
   }
 }
 
-/* ── Pricing scene ──────────────────────────────────────────────────────
-   One quiet centered card pointing to Contact Us. */
-.pricing {
+/* ── Notice scenes (Pricing, 404) ─────────────────────────────────────────
+   One quiet centered card with a single way onward. */
+.notice {
   max-width: 560px;
   padding: 40px 44px;
   text-align: center;
 }
-.pricing h1 {
+.notice h1 {
   margin: 0 0 16px;
   font-size: 28px;
   line-height: 1.2;
@@ -400,14 +400,14 @@ html.stage-swap::view-transition-old(scene) {
   color: #111827;
   text-wrap: balance;
 }
-.pricing p {
+.notice p {
   margin: 0 0 8px;
   font-size: 18px;
   line-height: 1.5;
   color: #374151;
   text-wrap: balance;
 }
-.pricing .button-solid {
+.notice .button-solid {
   margin-top: 20px;
   padding: 10px 22px;
   font-size: 16px;

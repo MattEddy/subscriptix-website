@@ -4,6 +4,7 @@ import Welcome from "./scenes/Welcome";
 import Features from "./scenes/Features";
 import Pricing from "./scenes/Pricing";
 import Contact from "./scenes/Contact";
+import NotFound from "./scenes/NotFound";
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="/features" element={<Features />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

@@ -2,13 +2,14 @@
 // scene to real HTML so search engines and AI crawlers that don't run
 // JavaScript still see the words, and gives each page its own <head>.
 // Writes dist/index.html, dist/features.html, … (vercel.json's cleanUrls
-// serves them at /features etc.) and dist/sitemap.xml.
+// serves them at /features etc.), dist/404.html (Vercel serves it for any
+// missing address) and dist/sitemap.xml.
 import { readFile, writeFile, rm } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 
 const dist = resolve("dist");
-const { render, pages, structuredData, SITE } = await import(
+const { render, pages, notFound, structuredData, SITE } = await import(
   pathToFileURL(resolve("dist-server/entry-server.js")).href
 );
 const template = await readFile(resolve(dist, "index.html"), "utf8");
@@ -16,9 +17,10 @@ const template = await readFile(resolve(dist, "index.html"), "utf8");
 const esc = (s) =>
   s.replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 
-for (const page of pages) {
+for (const page of [...pages, notFound]) {
+  const missing = page === notFound;
   const url = page.path === "/" ? `${SITE}/` : `${SITE}${page.path}`;
-  const head = [
+  const tags = missing ? [`<meta name="robots" content="noindex" />`] : [
     `<link rel="canonical" href="${url}" />`,
     `<meta property="og:type" content="website" />`,
     `<meta property="og:site_name" content="Subscriptix" />`,
@@ -32,7 +34,8 @@ for (const page of pages) {
     ...(page.path === "/"
       ? [`<script type="application/ld+json">${JSON.stringify(structuredData).replaceAll("<", "\\u003c")}</script>`]
       : []),
-  ].join("\n    ");
+  ];
+  const head = tags.join("\n    ");
 
   const html = template
     .replace(/<title>[^<]*<\/title>/, `<title>${esc(page.title)}</title>`)
@@ -43,7 +46,7 @@ for (const page of pages) {
   for (const marker of ["<!--seo-->", "<!--app-->"]) {
     if (html.includes(marker)) throw new Error(`prerender: ${marker} left in ${page.path}`);
   }
-  const file = page.path === "/" ? "index.html" : `${page.path.slice(1)}.html`;
+  const file = missing ? "404.html" : page.path === "/" ? "index.html" : `${page.path.slice(1)}.html`;
   await writeFile(resolve(dist, file), html);
   console.log(`prerendered ${page.path} -> dist/${file}`);
 }

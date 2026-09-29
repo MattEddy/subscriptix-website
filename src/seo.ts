@@ -34,8 +34,15 @@ export const pages: Page[] = [
   },
 ];
 
+// Any address that isn't a scene. Not in the sitemap; served as dist/404.html.
+export const notFound: Page = {
+  path: "/404",
+  title: "Page not found — Subscriptix",
+  description: "This page doesn't exist.",
+};
+
 export function pageFor(path: string): Page {
-  return pages.find((p) => p.path === path) ?? pages[0];
+  return pages.find((p) => p.path === path) ?? notFound;
 }
 
 // Structured data for the home page: who we are and what the product does.

@@ -7,7 +7,7 @@ Marketing splash site for Subscriptix (subscription cohort projection tool). Rep
 - Tailwind CSS v4 (via `@tailwindcss/vite` plugin), plus hand-written component CSS in `src/index.css`
 - React Router DOM v7: scenes at `/`, `/features`, `/pricing`, `/contact`
 - Pre-rendered at build time (see SEO below), then hydrated in the browser
-- Deployed to Vercel (`vercel.json`: `cleanUrls`, `www` → apex redirect, SPA rewrite that skips `/api/`)
+- Deployed to Vercel (`vercel.json`: `cleanUrls`, `www` → apex redirect; no SPA rewrite — every scene is a real file, and anything else gets `404.html` with a 404 status)
 
 ## Design: floating-card scenes
 Matches the app's sign-in screen. A fixed **frame** (nameplate card upper left → home; menu card upper right: Features · Pricing · Contact Us · Login; small footer line) over a giant faded **breathing logomark**, with a **scene** of floating cards in the middle. No "About"/"Home" menu item — the nameplate is the way home.
@@ -35,6 +35,7 @@ src/
     Features.tsx    — rail of feature cards + a panel per feature (all in the DOM, one shown)
     Pricing.tsx     — invitation-only card → Contact Us
     Contact.tsx     — contact form (→ /api/contact)
+    NotFound.tsx    — friendly 404 (route `*`, pre-rendered to dist/404.html)
 api/contact.ts      — Vercel function: contact form → SES
 scripts/prerender.mjs — writes dist/<scene>.html with real content + head tags, and sitemap.xml
 public/
@@ -68,7 +69,6 @@ public/
 - The function returns real status codes, so the form shows an error when a send actually fails
 - **Env vars (Vercel only, never committed):** `SES_ACCESS_KEY_ID`, `SES_SECRET_ACCESS_KEY` (IAM user `subscriptix-website-contact`, send-as-noreply-only policy — same JSON as the app's `docs/ses_setup.md`), `SES_REGION=us-west-2`, `CONTACT_TO` (recipient, or several comma-separated). Custom names because Vercel reserves `AWS_*`. Env changes need a redeploy.
 - Local: `npm run dev` does not serve `/api`; use `vercel dev` (with env pulled) to exercise the function
-- `vercel.json`'s SPA rewrite excludes `/api/`
 - Replaced the old Google Apps Script backend (2026-09-28)
 
 ## Deployment

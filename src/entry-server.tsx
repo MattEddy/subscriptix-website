@@ -4,7 +4,7 @@ import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom";
 import App from "./App";
 
-export { pages, structuredData, SITE } from "./seo";
+export { pages, notFound, structuredData, SITE } from "./seo";
 
 export function render(url: string) {
   return renderToString(
