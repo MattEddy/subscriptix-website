@@ -41,11 +41,14 @@ public/
 - LinkedIn: `https://www.linkedin.com/company/subscriptix`
 
 ## Contact Form
-- Uses Google Apps Script (Matt's Google Workspace account) as backend
-- POSTs JSON `{ name, email }` to the Apps Script deployment URL
-- Script sends email notification to configured recipient
-- To change recipient email: script.google.com > edit project > change email > Manage deployments > Edit > bump version > Deploy (URL stays the same)
-- Uses `mode: "no-cors"` since Apps Script doesn't return proper CORS headers
+- `src/scenes/Contact.tsx` POSTs JSON `{ name, email, message, website }` to `/api/contact`
+- `api/contact.ts` is a Vercel serverless function that validates and sends through **AWS SES on the Subscriptix AWS account** (`us-west-2`) — the same verified `subscriptix.com` identity the app uses. From `Subscriptix <noreply@subscriptix.com>`, Reply-To = the visitor, plain text.
+- `website` is a honeypot (hidden field): if filled, the function returns success and sends nothing
+- The function returns real status codes, so the form shows an error when a send actually fails
+- **Env vars (Vercel only, never committed):** `SES_ACCESS_KEY_ID`, `SES_SECRET_ACCESS_KEY` (IAM user `subscriptix-website-contact`, send-as-noreply-only policy — same JSON as the app's `docs/ses_setup.md`), `SES_REGION=us-west-2`, `CONTACT_TO` (recipient, or several comma-separated). Custom names because Vercel reserves `AWS_*`. Env changes need a redeploy.
+- Local: `npm run dev` does not serve `/api`; use `vercel dev` (with env pulled) to exercise the function
+- `vercel.json`'s SPA rewrite excludes `/api/`
+- Replaced the old Google Apps Script backend (2026-09-28)
 
 ## Deployment
 - GitHub: `MattEddy/subscriptix-website`
