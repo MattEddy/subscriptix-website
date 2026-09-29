@@ -20,7 +20,7 @@ export default function Welcome() {
     <div className="welcome">
       <div className="welcome__hero card scene-card" style={at(0)}>
         <h1>
-          Powerful <strong>financial modeling and analytics</strong>
+          AI-powered <strong>financial modeling and analytics</strong>
           <br />
           engineered for <strong>subscription businesses.</strong>
         </h1>

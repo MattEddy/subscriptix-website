@@ -209,7 +209,7 @@ body {
 @media (min-width: 768px) {
   /* No overlaps: the three cards step down a diagonal with gaps between. */
   .welcome {
-    width: min(880px, 68vw);
+    width: min(920px, 68vw);
     gap: 20px;
   }
   .welcome__steps {
