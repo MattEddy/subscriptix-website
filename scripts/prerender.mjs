@@ -27,7 +27,8 @@ for (const page of [...pages, notFound]) {
     `<meta property="og:title" content="${esc(page.title)}" />`,
     `<meta property="og:description" content="${esc(page.description)}" />`,
     `<meta property="og:url" content="${url}" />`,
-    `<meta property="og:image" content="${SITE}/og-image.png" />`,
+    // Bump ?v= whenever og-image.png changes: link previews cache by URL.
+    `<meta property="og:image" content="${SITE}/og-image.png?v=2" />`,
     `<meta property="og:image:width" content="1200" />`,
     `<meta property="og:image:height" content="630" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
