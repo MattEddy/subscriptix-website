@@ -2,6 +2,11 @@
 
 Resolved or superseded Open Items, moved out of `CLAUDE.md` at handoff.
 
+## 2026-09-29 — from the 2026-09-28 session's Open Items
+
+- **Step 3 — dress the app's sign-in pages in the site's frame** (Matt: "knock out 3 when we come back"). Lives in the **app repo** (`~/Code/subscriptix`, branch `CME-dev`; worth a heads-up to Jon, who built the auth flow): the allauth layouts (`accounts/templates/allauth/layouts/`) + `src/styles/_rail-and-auth.scss`. Add the menu card (Features · Pricing · Contact Us → `https://subscriptix.com/…`, **Login** shown active), nameplate linking to `https://subscriptix.com`, the breathing mark with the **exact numbers in "Design" above** (incl. the clock-phase script), the card drift-in, and the footer line. The menu then exists in two codebases — note it in both.
+  → **Done:** app PR #106, merged to master 2026-09-29 (also covers `/team-access/` and the legal pages, and adds the `/login/` redirect). Live once Jon deploys.
+
 ## 2026-09-28 — from the 2026-04-08 session's Open Items
 
 - Section 1 still uses the generic app screenshot — could use a more specific one

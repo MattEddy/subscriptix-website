@@ -13,6 +13,8 @@ Marketing splash site for Subscriptix (subscription cohort projection tool). Rep
 Matches the app's sign-in screen. A fixed **frame** (nameplate card upper left → home; menu card upper right: Features · Pricing · Contact Us · Login; small footer line) over a giant faded **breathing logomark**, with a **scene** of floating cards in the middle. No "About"/"Home" menu item — the nameplate is the way home.
 - Scene change: `NavLink`/`Link` with `viewTransition` → the old scene fades (`::view-transition-old(scene)`), new cards drift in one after another (`.scene-card` + `--i` stagger)
 - Features swaps panels the same way, fading only the stage (`stage-swap` class keeps the scene still)
+- **Features must never change size between features:** the scene is vertically centred, so any height change in the stage re-centres everything, rail included (the 2026-09-29 bug: captions of 2–4 lines jumped the scene up to 30px). Captions and screenshots therefore sit stacked as `.features__layer`s in one grid cell, unselected ones `visibility: hidden`, so each card is as tall as its tallest occupant; short captions centre vertically. A new feature or a longer caption needs no code change — but don't swap back to `hidden`/`display: none` panels.
+- **The Welcome hero's first line must fit on one line** at the 42px font ceiling: the scene is `min(920px, 68vw)`, widened from 880 on 2026-09-29 because "AI-powered financial modeling and analytics" needed 777px and had 774. Re-measure if the hero wording grows.
 - Login fades the scene out (`html.leaving`) before leaving for the app; a `pageshow` handler clears it so Back never restores a blank page
 - **The breathing mark (shared contract with the app's sign-in page, which should match it):** `.bg-mark` is `80vw` wide, `scale(0.708)` ↔ `scale(1)`, opacity `0.2`, `20s ease-in-out infinite alternate` (a 40 s cycle), phase keyed to the clock via `animation-delay: var(--mark-delay)`, where an inline script in `index.html` sets `--mark-delay = -((Date.now()/1000) % 40)s` before first paint
 - **The app's sign-in pages wear this same frame** (app repo `projection/components/auth_frame.html` + `auth_footer.html`, styles in `src/styles/_rail-and-auth.scss`, built 2026-09-28). **The menu, the footer line, the mark numbers and the card shadow therefore exist in two codebases — change one, change both.** The app fades its middle out before leaving for the site, mirroring Login's fade here. The Login button points at `app.subscriptix.com/login/?next=/`, which the app redirects to its real sign-in page.
@@ -30,15 +32,16 @@ src/
   components/
     Layout.tsx      — mark + Header + scene <main> + Footer; syncs document.title
     Header.tsx      — nameplate card + menu card; Login fade-out
-    Footer.tsx      — email · LinkedIn · ©
+    Footer.tsx      — email · LinkedIn · Privacy · Terms (→ app) · © Sparrowstep LLC
   scenes/
     Welcome.tsx     — headline card, two side cards on a diagonal, purple capability terms
-    Features.tsx    — rail of feature cards + a panel per feature (all in the DOM, one shown)
+    Features.tsx    — rail of feature cards + one stage whose caption and screenshot cards each stack all eight layers in one grid cell (one visible)
     Pricing.tsx     — invitation-only card → Contact Us
     Contact.tsx     — contact form (→ /api/contact)
     NotFound.tsx    — friendly 404 (route `*`, pre-rendered to dist/404.html)
 api/contact.ts      — Vercel function: contact form → SES
 scripts/prerender.mjs — writes dist/<scene>.html with real content + head tags, and sitemap.xml
+scripts/og-image.html + og-image.mjs — the share-image mock and its renderer
 public/
   mark.svg          — gradient logomark (the breathing background)
   logo.png, favicon.png
@@ -48,7 +51,7 @@ public/
 ```
 
 ## SEO / AI search
-- The site is a client-rendered React app, so the build (`npm run build`) runs `scripts/prerender.mjs`: each scene is rendered to real HTML, so crawlers that don't run JavaScript (most AI crawlers) see the words. Features puts all eight panels in the HTML (hidden except the selected one) so every description is indexable.
+- The site is a client-rendered React app, so the build (`npm run build`) runs `scripts/prerender.mjs`: each scene is rendered to real HTML, so crawlers that don't run JavaScript (most AI crawlers) see the words. Features puts all eight captions in the HTML (each once; only the selected one visible) so every description is indexable.
 - Each page gets its own title, description, canonical URL (apex `https://subscriptix.com`), Open Graph + Twitter tags; the home page also carries JSON-LD (Organization + SoftwareApplication with `featureList`). Edit these in `src/seo.ts`.
 - Keep search terms accurate and in sentences — never hidden keyword lists (cloaking/spammy markup penalties). The visible purple term card on Welcome is where search terms belong.
 - **Share image** (`public/og-image.png`, the link preview in Slack/iMessage/LinkedIn): rendered from `scripts/og-image.html`, a mock of the Welcome headline card at 1200×630. When the hero changes, edit the mock's `<h1>` to match, run `node scripts/og-image.mjs`, and bump `?v=` on the `og:image` tag in `scripts/prerender.mjs` (previews are cached by URL). Currently `v=2` ("AI-powered", 2026-09-29).
@@ -84,32 +87,31 @@ public/
 
 ## Recent Session
 
-**Date:** 2026-09-28
+**Date:** 2026-09-29
 **Branch:** main
 
-Rebuilt the whole site in one long session, from "can we find the old login-page animation?" to a pre-rendered, SEO-ready site with its own email backend. All pushed and live.
+Two halves: step 3 (the app's sign-in pages in this site's frame, done in the app repo), then a run of copy and polish on this site. Everything is pushed and live.
 
-**The lost animation.** Matt remembered a pulsing, growing faded logomark on the app's login page and thought Jon's working-login rewrite had dropped it. Git history plus the 2026-05-01 handoff log showed otherwise: a slow-zoom animation was workshopped that day and Matt vetoed it ("Nope. Too much."), so it never reached git; the transcript holding it had been pruned (Claude Code keeps ~30 days). Rebuilt it from the description for the marketing site instead, then tuned: first a bold 14 s zoom-and-fade, then a back-and-forth pulse, finally **~57%↔80% of screen width, 20 s each way** (Matt: 35 s was "a little slow", 28 s too; 20 s landed).
+**Step 3, in the app repo** (`~/Code/subscriptix`, PR #106, merged to master 2026-09-29). The allauth auth card, `/team-access/` and the app's legal pages now share one frame (`projection/components/auth_frame.html` + `auth_footer.html`): nameplate → subscriptix.com when signed out, nav card with Login current (hidden when signed in), the breathing mark with the same numbers and clock phase, card drift-in, and a fade-out when leaving for this site (Matt: *"Sure -- sounds nice."*). Details in the app's `CLAUDE.md` and `CLAUDE_MATT.md`.
+- **Found on the way: production is far behind master** — it still serves the pre-passwordless username/password page at `/login/`, and `/privacy/` + `/terms/` 404 there. On current code `/login/` was a 404, which would have broken this site's Login button on the next deploy; the app now redirects `/login/` → `/accounts/login/` keeping `?next=`. Matt: *"Nobody is currently using Production"* — so dead links until Jon deploys are fine.
 
-**The redesign — "match the login screen".** Matt: *"change the overall formatting of the page to match the login screen. IE, hovering cards. Subscriptix nameplate in the upper left, menu card in the upper right, and a set of content cards in the middle of the screen, forming a 'scene'."* Goals he set: each scene fits one laptop screen, and a *"centered, zen flow"* feel in design and transitions. Built as a fixed frame + scenes with View Transitions (old scene fades, new cards drift in one by one).
-- **Welcome** (was "About"): started as a centered screenshot with text cards hovering over it; Matt cut the screenshot, then asked for no overlapping cards, bigger hero, deeper shadows (+50%), a two-line hero with bold phrases, and a diagonal of side cards (Connect/Generate/In seconds upper right; "Create supercharged models…" lower left with a solid-blue Learn More → Features). Added a purple capability-terms card lower right (14 px, 380 px wide) — doubles as visible search terms.
-- **Features**: Matt was unsure how to present eight features; I argued against a carousel and proposed borrowing the app's rail + stage layout. Iterated to: FEATURES label card + one bold card-button per feature (selected = solid blue), caption card above the screenshot (20 px), no titles or step arrows in the caption. Copy drafted from the app repo's actual code/docs (connector registry, Claude-based comprehension engine, Excel mirror docs) with Matt's edits; added "Split & classify" from an unlisted screenshot.
-- **Pricing**: invitation-only card → Contact Us. **Contact Us**: form in a card, new Message field, intro hidden after sending.
-- **Menu**: About removed — Matt: *"this isn't really 'about' so much as 'Welcome'… maybe the nameplate is enough?"* The nameplate is the way home.
-- **404**: friendly "Nothing to see here." scene, real 404 status.
+**Footer (both sites, one line):** `info@ · LinkedIn · Privacy Policy · Terms of Service · © 2026 Sparrowstep LLC`. Privacy/Terms point at the app (`app.subscriptix.com/privacy/`, `/terms/`) and go live with Jon's deploy. Matt: *"the copyright should be 2026 Sparrowstep LLC"* — changed here; **the app's footer still says "Subscriptix"** (open item).
 
-**Contact form → Subscriptix SES.** The Apps Script backend used `no-cors`, so it could never report a failure. Replaced with `api/contact.ts` (Vercel function → SES on the Subscriptix AWS account, the identity the app already verified). Walked Matt through a new send-only IAM user (`subscriptix-website-contact`, inline policy `send-as-noreply-only`) and four Vercel env vars; `CONTACT_TO` takes a comma-separated list. Tested every path locally with fake creds (fake key → 502, never a false "thank you"); Matt sent a real message — delivered.
+**Features copy — Matt's pass, several rounds:** new captions for Connect, Import, Retention and Excel; buttons title-cased ("Import a File" → **"Import Files"**); "new customers" → "new subscriptions"; "array" → "table"; the "(fields, groups and destinations)" parenthetical cut. Bolding went from most captions → none (*"Let's try it with no bolding"*) → **exactly five phrases Matt listed** (Connect, Import, Split, Retention, Excel; none in Source Dashboard, Compare, Reports). Liberties taken and reported: typos fixed, "syncing" over "synching", mixed italic/bold normalised to bold, "feature set, side-by-side" (Matt added the comma).
 
-**Softening the jump to the app's login.** Clicking Login fades the scene before navigating; Back never restores a blank page (`pageshow`); the mark's phase is keyed to the clock so it can match across sites. A true cross-document transition is impossible (different origin).
+**Features jump bug.** Matt: *"the whole image shifts when you press a new feature button… maybe lock the screenshot size to a fixed frame."* Measured before building: the screenshot frame was already fixed; the **caption** card changed height (72/102/132px) and the vertically-centred scene re-centred on every switch, rail included. Fix = his idea applied to both cards: all layers stacked in one grid cell (see Design above). Measured stable to the pixel at 1440×900, 1280×720 and 390 wide; the same measurement on the live site showed the 15–30px jumps. Short captions centre in the taller card.
 
-**SEO / AI search.** Found every URL served an empty `<div id="root">` (AI crawlers see nothing), no robots/sitemap, no preview tags, and `www` + apex both serving the full site. Now: build-time pre-render of every scene (`scripts/prerender.mjs`), per-scene titles/descriptions/canonicals/OG + share image, JSON-LD, `robots.txt`, `sitemap.xml`, `llms.txt`, `www` → apex 308. Matt asked to hide search terms; advised against hidden keyword lists (ignored/penalized) and put accurate terms in structured data + meta descriptions, and he chose the visible purple term card. Walked him through Google Search Console DNS verification (he'd pasted the token into Squarespace's *Name* field; it belongs in *Text* with Name `@`); verified live via `dig`.
+**Hero, from Mike:** "AI-powered **financial modeling and analytics** engineered for **subscription businesses.**" The longer first line wrapped to three lines at ≥1600px (777px needed, 774 available), so the Welcome scene's cap went 880 → 920px.
 
-**Files:** everything under `src/` (new `App.tsx`, `entry-server.tsx`, `seo.ts`, `scenes/*`), `api/contact.ts`, `scripts/prerender.mjs`, `index.html`, `vercel.json`, `public/` (`mark.svg`, `shots/`, `og-image.png`, `robots.txt`, `llms.txt`; old screenshots/icons deleted), `CLAUDE.md` rewritten.
+**Share image** re-rendered with the new hero; its mock and renderer now live in `scripts/` (they had only survived in a temp folder) and the `og:image` URL carries `?v=2` to beat preview caches.
+
+**Files:** `src/scenes/Features.tsx`, `src/scenes/Welcome.tsx`, `src/components/Footer.tsx`, `src/index.css`, `scripts/og-image.html`, `scripts/og-image.mjs`, `scripts/prerender.mjs`, `public/og-image.png`, `CLAUDE.md`.
 
 ### Open Items / Next Steps
-- **Step 3 — dress the app's sign-in pages in the site's frame** (Matt: "knock out 3 when we come back"). Lives in the **app repo** (`~/Code/subscriptix`, branch `CME-dev`; worth a heads-up to Jon, who built the auth flow): the allauth layouts (`accounts/templates/allauth/layouts/`) + `src/styles/_rail-and-auth.scss`. Add the menu card (Features · Pricing · Contact Us → `https://subscriptix.com/…`, **Login** shown active), nameplate linking to `https://subscriptix.com`, the breathing mark with the **exact numbers in "Design" above** (incl. the clock-phase script), the card drift-in, and the footer line. The menu then exists in two codebases — note it in both.
+- **Jon deploys the app** (master → Dev → Prod). Then this site's Privacy/Terms footer links and the app's new sign-in frame go live; do one real sign-in on production afterwards (it's the first production run of the passwordless system).
+- **App footer still says "© 2026 Subscriptix"** — the site says Sparrowstep LLC. One line in the app's `projection/components/auth_footer.html`, but it's a PR through Jon's ~20-minute CI; Matt hasn't said when.
 - **Delete the old Google Apps Script deployment** (script.google.com) — the SES form is confirmed working.
 - **Search Console:** submit `sitemap.xml` if not done; check Pages/Performance in a few days.
 - **Optional:** a tighter Reports screenshot (the wide strip renders small); a larger Services grab (original is 1106 px); a Google Sheets screenshot once the add-on exists.
-- **Undecided:** whether visible captions should carry more search terms (e.g. "cohort" in Retention modeling, "churn" in Compare) — Matt didn't pick.
+- **Undecided:** whether visible captions should carry more search terms (e.g. "cohort" in Retention Modeling, "churn" in Compare) — Matt didn't pick; the captions were rewritten since and still carry neither.
 - **Unanswered:** untrack `.DS_Store` and add it to `.gitignore`?
