@@ -279,7 +279,7 @@ body {
 }
 .features__text p {
   margin: 0;
-  font-size: 17px;
+  font-size: 20px;
   line-height: 1.5;
   color: #374151;
 }
@@ -328,7 +328,7 @@ html.stage-swap::view-transition-old(scene) {
   /* A fixed frame so screenshots of every shape sit in the same place;
      each is fitted inside it. */
   .features__shot {
-    height: calc(100vh - 360px);
+    height: calc(100vh - 390px);
     min-height: 300px;
     max-height: 640px;
   }

@@ -172,12 +172,12 @@ export default function Features() {
       </nav>
 
       <div key={active} className="features__stage">
-        <figure className="features__shot card scene-card" style={at(1)}>
-          <img src={feature.img} alt={feature.alt} />
-        </figure>
-        <div className="features__text card scene-card" style={at(2)}>
+        <div className="features__text card scene-card" style={at(1)}>
           <p>{feature.body}</p>
         </div>
+        <figure className="features__shot card scene-card" style={at(2)}>
+          <img src={feature.img} alt={feature.alt} />
+        </figure>
       </div>
     </div>
   );
