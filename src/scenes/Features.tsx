@@ -10,64 +10,72 @@ type Feature = {
 
 const features: Feature[] = [
   {
-    title: "Connect a service",
+    title: "Connect a Service",
     img: "/shots/services.png",
     alt: "Billing platforms Subscriptix connects to: Stripe, Chargebee, Recurly, RevenueCat and Paddle",
     body: (
       <>
-        Connect <strong>your billing platform</strong>. Your transaction history
-        flows in and stays in sync automatically.
+        <strong>
+          Link your account and import data directly from most major billing
+          platforms.
+        </strong>{" "}
+        Subscriptix gathers your transaction history and keeps your models
+        up-to-date with ongoing, automatic syncing.
       </>
     ),
   },
   {
-    title: "Import a file",
+    title: "Import a File",
     img: "/shots/file-import.png",
     alt: "A transaction log CSV recognized and its columns mapped to the ledger",
     body: (
       <>
-        Drop in a CSV or spreadsheet. Whether a raw transaction log, a
-        custom-generated cohort table, or something else entirely,{" "}
+        If your data lives in CSVs or spreadsheets,
+        Subscriptix's machine learning and AI tools can{" "}
         <strong>
-          AI-powered parsers recognize what kind of data it is and map every
-          column
+          analyze and parse nearly any table format, mapping every column and
+          routing data to where it belongs
         </strong>
         .
       </>
     ),
   },
   {
-    title: "Split & classify",
+    title: "Split & Classify",
     img: "/shots/parse-data.png",
     alt: "Routing data to models and classifying 48 subscription lapses as win-backs",
     body: (
       <>
-        Split one data source into separate models by plan, channel or price.
+        <strong>Split one data source into separate models by plan, channel or price.</strong>{" "}
         Subscriptix finds lapsed-and-returned customers, and{" "}
-        <strong>you decide whether they're win-backs or new customers.</strong>
+        you decide whether they're win-backs or new subscriptions.
       </>
     ),
   },
   {
-    title: "Source dashboard",
+    title: "Source Dashboard",
     img: "/shots/source-dashboard.png",
     alt: "A data source flowing through import channels into three target models",
     body: (
       <>
-        See exactly how each data source feeds each model (fields, groups and
-        destinations), and refresh it with a new file anytime.
+        See exactly how each data source feeds each model, and refresh it with a
+        new file anytime.
       </>
     ),
   },
   {
-    title: "Retention modeling",
+    title: "Retention Modeling",
     img: "/shots/retention.png",
     alt: "Baseline and adjusted retention curves with confidence intervals",
     body: (
       <>
-        Fitted retention curves with confidence intervals. Shape them with{" "}
-        <strong>age-based and cohort-specific adjustments</strong>, and the whole
-        model recalculates.
+        Fitted retention curves with confidence intervals.
+        Seasonal, age-based and cohort-specific adjustments. Promo pricing.
+        Reactivated subscriptions.{" "}
+        <strong>
+          A suite of tools geared for subscription businesses that offer total,
+          intuitive control of forecasts.
+        </strong>
       </>
     ),
   },
@@ -77,7 +85,7 @@ const features: Feature[] = [
     alt: "Two models' outputs open side by side",
     body: (
       <>
-        Open up to <strong>four models side by side</strong> to compare
+        Open up to four models side by side to compare
         scenarios, segments or price points.
       </>
     ),
@@ -99,8 +107,13 @@ const features: Feature[] = [
     alt: "A Subscriptix model mirrored into an Excel workbook beside the add-in panel",
     body: (
       <>
-        Your model lives inside Excel or Google Sheets.{" "}
-        <strong>Edit in the spreadsheet or in the app, and changes flow both ways.</strong>
+        Echo your models in any spreadsheet.{" "}
+        <strong>
+          Subscriptix's plug-ins offer the full feature set, side-by-side with
+          your platform of choice.
+        </strong>{" "}
+        Edit data in the spreadsheet or the app &mdash;{" "}
+        changes instantly flow both ways.
       </>
     ),
   },
