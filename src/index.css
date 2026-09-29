@@ -41,6 +41,7 @@ body {
   user-select: none;
   opacity: 0.2;
   transform: translate(-50%, -50%) scale(0.708);
+  /* 20 s each way = a 40 s cycle; Layout.tsx keys its phase to the clock. */
   animation: bg-mark-pulse 20s ease-in-out infinite alternate;
   will-change: transform;
 }
@@ -370,4 +371,12 @@ html.stage-swap::view-transition-old(scene) {
   margin-top: 20px;
   padding: 10px 22px;
   font-size: 16px;
+}
+
+/* Clicking Login fades the scene out (like a scene change) before leaving
+   for the app's sign-in page. Header.tsx adds and clears the class. */
+html.leaving .scene {
+  opacity: 0;
+  transform: scale(0.985);
+  transition: opacity 0.3s ease-in, transform 0.3s ease-in;
 }
