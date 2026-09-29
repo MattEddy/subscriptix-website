@@ -25,7 +25,7 @@ const features: Feature[] = [
     ),
   },
   {
-    title: "Import a File",
+    title: "Import Files",
     img: "/shots/file-import.png",
     alt: "A transaction log CSV recognized and its columns mapped to the ledger",
     body: (
