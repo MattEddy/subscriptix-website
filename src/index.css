@@ -296,16 +296,24 @@ body {
   min-width: 0;
   view-transition-name: stage;
 }
-.features__stage[hidden] {
-  display: none;
+/* Every caption / screenshot sits in the same grid cell; the unselected ones
+   hold their space invisibly. */
+.features__text,
+.features__shot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.features__layer {
+  grid-area: 1 / 1;
+}
+.features__layer[aria-hidden="true"] {
+  visibility: hidden;
 }
 .features__shot {
   margin: 0;
   padding: 16px;
   background: #f7f8fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  place-items: center;
 }
 .features__shot img {
   display: block;
@@ -316,6 +324,8 @@ body {
 }
 .features__text {
   padding: 20px 24px;
+  /* The card is as tall as the longest caption; shorter ones sit centred. */
+  align-items: center;
 }
 .features__text p {
   margin: 0;
@@ -371,6 +381,7 @@ html.stage-swap::view-transition-old(scene) {
     height: calc(100vh - 390px);
     min-height: 300px;
     max-height: 640px;
+    grid-template: minmax(0, 1fr) / minmax(0, 1fr);
   }
   .features__shot img {
     max-height: 100%;

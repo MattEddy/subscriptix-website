@@ -176,24 +176,32 @@ export default function Features() {
         ))}
       </nav>
 
-      {/* Every feature's panel is in the page (so the words are there for
-          search engines and screen readers); only the selected one shows.
-          A panel's cards drift in again each time it's revealed. */}
-      {features.map((f, i) => (
-        <section
-          key={f.title}
-          className="features__stage"
-          hidden={i !== active}
-          aria-label={f.title}
-        >
-          <div className="features__text card scene-card" style={at(1)}>
-            <p>{f.body}</p>
-          </div>
-          <figure className="features__shot card scene-card" style={at(2)}>
-            <img src={f.img} alt={f.alt} />
-          </figure>
-        </section>
-      ))}
+      {/* Every feature's caption and screenshot is in the page (so the words
+          are there for search engines), stacked in one spot: each card is
+          sized by its tallest occupant, so switching features never resizes
+          the stage and re-centres the scene. Only the selected one is visible
+          (the rest are hidden from screen readers too). `key` remounts the
+          cards on a switch, so they drift in again. */}
+      <section className="features__stage" aria-label={features[active].title}>
+        <div key={`text-${active}`} className="features__text card scene-card" style={at(1)}>
+          {features.map((f, i) => (
+            <p key={f.title} className="features__layer" aria-hidden={i !== active}>
+              {f.body}
+            </p>
+          ))}
+        </div>
+        <figure key={`shot-${active}`} className="features__shot card scene-card" style={at(2)}>
+          {features.map((f, i) => (
+            <img
+              key={f.title}
+              className="features__layer"
+              src={f.img}
+              alt={i === active ? f.alt : ""}
+              aria-hidden={i !== active}
+            />
+          ))}
+        </figure>
+      </section>
     </div>
   );
 }
