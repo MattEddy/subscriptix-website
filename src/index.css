@@ -27,3 +27,347 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Giant faded logomark behind the Home page, rebuilt from the sign-in page's
+   .auth-bg-mark. Breathes between ~57% and 80% of the screen width. */
+.bg-mark {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 80vw;
+  height: auto;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.2;
+  transform: translate(-50%, -50%) scale(0.708);
+  animation: bg-mark-pulse 20s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* 0.708 = 56.7vw / 80vw */
+@keyframes bg-mark-pulse {
+  from { transform: translate(-50%, -50%) scale(0.708); }
+  to   { transform: translate(-50%, -50%) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-mark {
+    animation: none;
+    transform: translate(-50%, -50%) scale(0.6);
+  }
+}
+
+/* ── Scene frame ────────────────────────────────────────────────────────
+   Everything floats as a card over the breathing mark, like the app's
+   sign-in page. Shadow matches the app's layered card shadow. */
+body {
+  background: #fff;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  border: 1px solid #e6e8ee;
+  border-radius: 12px;
+  box-shadow:
+    0 1px 2px rgba(10, 11, 15, 0.09),
+    0 8px 20px rgba(10, 11, 15, 0.105),
+    0 20px 40px rgba(10, 11, 15, 0.105);
+}
+
+/* Cards drift up into place one after another when a scene arrives;
+   --i is each card's order in the scene. */
+.scene-card {
+  animation: scene-card-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(0.12s + var(--i, 0) * 0.11s);
+}
+
+@keyframes scene-card-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Changing scenes: only the middle cross-fades out (the frame and the mark
+   hold still), then the new scene's cards drift in on their own. */
+.scene {
+  view-transition-name: scene;
+}
+::view-transition-old(root),
+::view-transition-new(root),
+::view-transition-new(scene) {
+  animation: none;
+}
+::view-transition-old(scene) {
+  animation: scene-out 0.3s ease-in both;
+}
+@keyframes scene-out {
+  to { opacity: 0; transform: scale(0.985); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-card,
+  ::view-transition-old(scene) {
+    animation: none;
+  }
+}
+
+/* Solid brand blue, matching the menu's Login button. */
+.button-solid {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background: #055cda;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.15s;
+}
+.button-solid:hover {
+  background: #044ab8;
+}
+
+/* ── Welcome scene ────────────────────────────────────────────────────────
+   A big headline card at the center with two smaller cards hanging off its
+   corners on a diagonal (echoing the mark). Stacks into a column on narrow
+   screens. */
+.welcome {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+.welcome__hero,
+.welcome__sheets,
+.welcome__steps {
+  padding: 22px 26px;
+  color: #111827;
+}
+.welcome__hero h1 {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.welcome__hero strong {
+  font-weight: 700;
+}
+.welcome__sheets p,
+.welcome__steps p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.45;
+  color: #374151;
+}
+
+.welcome__more {
+  margin-top: 14px;
+}
+.welcome__more span {
+  transition: transform 0.2s ease;
+}
+.welcome__more:hover span {
+  transform: translateX(3px);
+}
+.welcome__steps strong {
+  color: #066FFC;
+}
+
+@media (min-width: 768px) {
+  /* No overlaps: the three cards step down a diagonal with gaps between. */
+  .welcome {
+    width: min(880px, 68vw);
+    gap: 20px;
+  }
+  .welcome__steps {
+    align-self: flex-end;
+    order: -1;
+  }
+  .welcome__sheets {
+    align-self: flex-start;
+    max-width: 320px;
+  }
+  .welcome__hero {
+    padding: 40px 52px;
+    text-align: center;
+  }
+  .welcome__hero h1 {
+    font-size: clamp(30px, 2.7vw, 42px);
+  }
+  .welcome__sheets p,
+  .welcome__steps p {
+    font-size: clamp(18px, 1.5vw, 22px);
+  }
+  /* 25% smaller than the other side card. */
+  .welcome__sheets p {
+    font-size: clamp(13.5px, 1.125vw, 16.5px);
+  }
+}
+
+/* ── Features scene ─────────────────────────────────────────────────────
+   Borrowed from the app itself: a rail of features on the left, and a stage
+   on the right holding the selected feature's screenshot above its text.
+   On narrow screens the rail becomes a scrolling row above the stage. */
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+.features__rail {
+  display: flex;
+  gap: 8px;
+  padding: 4px 2px 12px;
+  overflow-x: auto;
+}
+.features__label {
+  display: none;
+}
+/* Each feature is its own small floating card. The selected one goes solid
+   brand blue, like Login and Learn More. */
+.features__item {
+  flex: none;
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2937;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.features__item:hover {
+  transform: translateY(-1px);
+  color: #055cda;
+}
+.features__item[aria-current="true"] {
+  background: #055cda;
+  border-color: #055cda;
+  color: #fff;
+}
+
+.features__stage {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  view-transition-name: stage;
+}
+.features__shot {
+  margin: 0;
+  padding: 16px;
+  background: #f7f8fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.features__shot img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(10, 11, 15, 0.1);
+}
+.features__text {
+  padding: 20px 24px;
+}
+.features__text p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: #374151;
+}
+.features__text strong {
+  color: #111827;
+}
+
+/* A feature swap fades only the stage; the rest of the scene holds still. */
+html.stage-swap::view-transition-old(scene) {
+  animation: none;
+}
+::view-transition-old(stage) {
+  animation: scene-out 0.25s ease-in both;
+}
+::view-transition-new(stage) {
+  animation: none;
+}
+
+@media (min-width: 768px) {
+  .features {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+    width: min(1180px, 88vw);
+  }
+  .features__rail {
+    flex-direction: column;
+    flex: none;
+    width: 230px;
+    padding: 0;
+    overflow: visible;
+  }
+  .features__label {
+    display: block;
+    margin: 0 0 4px;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #055cda;
+  }
+  .features__stage {
+    flex: 1;
+  }
+  /* A fixed frame so screenshots of every shape sit in the same place;
+     each is fitted inside it. */
+  .features__shot {
+    height: calc(100vh - 360px);
+    min-height: 300px;
+    max-height: 640px;
+  }
+  .features__shot img {
+    max-height: 100%;
+    width: auto;
+    object-fit: contain;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(stage) {
+    animation: none;
+  }
+}
+
+/* ── Pricing scene ──────────────────────────────────────────────────────
+   One quiet centered card pointing to Contact Us. */
+.pricing {
+  max-width: 560px;
+  padding: 40px 44px;
+  text-align: center;
+}
+.pricing h1 {
+  margin: 0 0 16px;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #111827;
+  text-wrap: balance;
+}
+.pricing p {
+  margin: 0 0 8px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: #374151;
+  text-wrap: balance;
+}
+.pricing .button-solid {
+  margin-top: 20px;
+  padding: 10px 22px;
+  font-size: 16px;
+}

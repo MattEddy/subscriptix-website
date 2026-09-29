@@ -1,8 +1,11 @@
 import { useState, type FormEvent } from "react";
 
-export default function LearnMore() {
+export default function Contact() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  // Honeypot — hidden from people, filled in by bots; the server drops those.
+  const [website, setWebsite] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
   const [submitting, setSubmitting] = useState(false);
@@ -13,14 +16,12 @@ export default function LearnMore() {
     setSubmitting(true);
     setError("");
     try {
-      await fetch(
-        "https://script.google.com/macros/s/AKfycbytnchP_KcZb0wnBNhAb-t0HCdOHt7iV81JgVpvg72Ez1a3DkOdVAvs7WOYvZxvW-YUiA/exec",
-        {
-          method: "POST",
-          body: JSON.stringify({ name, email }),
-          mode: "no-cors",
-        }
-      );
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message, website }),
+      });
+      if (!res.ok) throw new Error(`contact: ${res.status}`);
       setSubmitted(true);
     } catch {
       setError("Something went wrong. Please email us directly.");
@@ -30,28 +31,22 @@ export default function LearnMore() {
   }
 
   return (
-    <section className="pt-32 pb-24 md:pt-40 md:pb-32">
-      <div className="max-w-2xl mx-auto px-6">
+    <section className="card scene-card w-full max-w-xl p-8 md:p-10">
+      <div>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
-          Learn More
+          Contact Us
         </h1>
-        <div className="mt-6 text-lg text-gray-600 space-y-4">
-          <p>
-            We're currently working with design partners to hone the Subscriptix
-            experience. If you think Subscriptix might be right for your
-            business, we'd love to schedule a demo.
-          </p>
-          <p>
-            Please reach out by emailing us directly at{" "}
-            <a
-              href="mailto:info@subscriptix.com"
-              className="text-brand-600 hover:text-brand-700 font-medium underline underline-offset-2"
-            >
-              info@subscriptix.com
-            </a>{" "}
-            or using the form below.
-          </p>
-        </div>
+        <p className="mt-6 text-lg text-gray-600">
+          If you have any questions or are interested in scheduling a demo,
+          please reach out by emailing us at{" "}
+          <a
+            href="mailto:info@subscriptix.com"
+            className="text-brand-600 hover:text-brand-700 font-medium underline underline-offset-2"
+          >
+            info@subscriptix.com
+          </a>{" "}
+          or using the form below.
+        </p>
 
         {submitted ? (
           <div className="mt-10 p-8 rounded-2xl bg-green-50 border border-green-200 text-center">
@@ -94,6 +89,32 @@ export default function LearnMore() {
                 placeholder="you@company.com"
               />
             </div>
+            <div>
+              <label
+                htmlFor="message"
+                className="block text-sm font-medium text-gray-700 mb-1.5"
+              >
+                Message
+              </label>
+              <textarea
+                id="message"
+                rows={4}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all text-gray-900 resize-y"
+                placeholder="Your message"
+              />
+            </div>
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              className="absolute -left-[9999px] h-px w-px opacity-0"
+            />
             {error && (
               <p className="text-red-600 text-sm">{error}</p>
             )}
