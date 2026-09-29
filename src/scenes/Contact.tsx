@@ -36,17 +36,19 @@ export default function Contact() {
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
           Contact Us
         </h1>
-        <p className="mt-6 text-lg text-gray-600">
-          If you have any questions or are interested in scheduling a demo,
-          please reach out by emailing us at{" "}
-          <a
-            href="mailto:info@subscriptix.com"
-            className="text-brand-600 hover:text-brand-700 font-medium underline underline-offset-2"
-          >
-            info@subscriptix.com
-          </a>{" "}
-          or using the form below.
-        </p>
+        {!submitted && (
+          <p className="mt-6 text-lg text-gray-600">
+            If you have any questions or are interested in scheduling a demo,
+            please reach out by emailing us at{" "}
+            <a
+              href="mailto:info@subscriptix.com"
+              className="text-brand-600 hover:text-brand-700 font-medium underline underline-offset-2"
+            >
+              info@subscriptix.com
+            </a>{" "}
+            or using the form below.
+          </p>
+        )}
 
         {submitted ? (
           <div className="mt-10 p-8 rounded-2xl bg-green-50 border border-green-200 text-center">
@@ -115,9 +117,7 @@ export default function Contact() {
               onChange={(e) => setWebsite(e.target.value)}
               className="absolute -left-[9999px] h-px w-px opacity-0"
             />
-            {error && (
-              <p className="text-red-600 text-sm">{error}</p>
-            )}
+            {error && <p className="text-red-600 text-sm">{error}</p>}
             <button
               type="submit"
               disabled={submitting}
