@@ -16,11 +16,9 @@ const features: Feature[] = [
     body: (
       <>
         <strong>
-          Link your account and import data directly from most major billing
-          platforms.
+          Easily import data directly from most major billing platforms.
         </strong>{" "}
-        Subscriptix gathers your transaction history and keeps your models
-        up-to-date with ongoing, automatic syncing.
+        Then keep your models up-to-date with ongoing, automatic syncing.
       </>
     ),
   },
@@ -33,8 +31,8 @@ const features: Feature[] = [
         If your data lives in CSVs or spreadsheets,
         Subscriptix's machine learning and AI tools can{" "}
         <strong>
-          analyze and parse nearly any table format, mapping every column and
-          routing data to where it belongs
+          analyze and parse nearly any table format, automatically mapping
+          every column and routing data to where it belongs
         </strong>
         .
       </>
