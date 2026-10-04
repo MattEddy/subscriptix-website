@@ -87,25 +87,19 @@ public/
 
 ## Recent Session
 
-**Date:** 2026-09-29
+**Date:** 2026-10-04 (started 2026-09-30)
 **Branch:** main
 
-Two halves: step 3 (the app's sign-in pages in this site's frame, done in the app repo), then a run of copy and polish on this site. Everything is pushed and live.
+A short copy session. Both changes are pushed and live.
 
-**Step 3, in the app repo** (`~/Code/subscriptix`, PR #106, merged to master 2026-09-29). The allauth auth card, `/team-access/` and the app's legal pages now share one frame (`projection/components/auth_frame.html` + `auth_footer.html`): nameplate → subscriptix.com when signed out, nav card with Login current (hidden when signed in), the breathing mark with the same numbers and clock phase, card drift-in, and a fade-out when leaving for this site (Matt: *"Sure -- sounds nice."*). Details in the app's `CLAUDE.md` and `CLAUDE_MATT.md`.
-- **Found on the way: production is far behind master** — it still serves the pre-passwordless username/password page at `/login/`, and `/privacy/` + `/terms/` 404 there. On current code `/login/` was a 404, which would have broken this site's Login button on the next deploy; the app now redirects `/login/` → `/accounts/login/` keeping `?next=`. Matt: *"Nobody is currently using Production"* — so dead links until Jon deploys are fine.
+**Features copy (`src/scenes/Features.tsx`, commit `5adc99f`):**
+- **Connect a Service** is now Matt's wording: "**Easily import data directly from most major billing platforms.** Then keep your models up-to-date with ongoing, automatic syncing." The first sentence keeps the bold, as the old first sentence had, so Connect is still one of the five bolded phrases. The old "Link your account…" sentence and the "Subscriptix gathers your transaction history" clause are gone.
+- **Import Files:** "mapping every column" → "**automatically** mapping every column", inside the existing bold phrase.
+- The layered caption cards absorb length changes, so these edits needed no layout work (see Design → Features above).
 
-**Footer (both sites, one line):** `info@ · LinkedIn · Privacy Policy · Terms of Service · © 2026 Sparrowstep LLC`. Privacy/Terms point at the app (`app.subscriptix.com/privacy/`, `/terms/`) and go live with Jon's deploy. Matt: *"the copyright should be 2026 Sparrowstep LLC"* — changed here; **the app's footer still says "Subscriptix"** (open item).
+**`.DS_Store` untracked (commit `a4aed0c`).** Matt asked what it was and whether to delete it. It's the Finder's per-folder view-settings file and Finder recreates it, so deleting it wouldn't stick. Instead the two tracked copies were removed from git (`git rm --cached`, which leaves them on disk) and `.DS_Store` was added to `.gitignore`.
 
-**Features copy — Matt's pass, several rounds:** new captions for Connect, Import, Retention and Excel; buttons title-cased ("Import a File" → **"Import Files"**); "new customers" → "new subscriptions"; "array" → "table"; the "(fields, groups and destinations)" parenthetical cut. Bolding went from most captions → none (*"Let's try it with no bolding"*) → **exactly five phrases Matt listed** (Connect, Import, Split, Retention, Excel; none in Source Dashboard, Compare, Reports). Liberties taken and reported: typos fixed, "syncing" over "synching", mixed italic/bold normalised to bold, "feature set, side-by-side" (Matt added the comma).
-
-**Features jump bug.** Matt: *"the whole image shifts when you press a new feature button… maybe lock the screenshot size to a fixed frame."* Measured before building: the screenshot frame was already fixed; the **caption** card changed height (72/102/132px) and the vertically-centred scene re-centred on every switch, rail included. Fix = his idea applied to both cards: all layers stacked in one grid cell (see Design above). Measured stable to the pixel at 1440×900, 1280×720 and 390 wide; the same measurement on the live site showed the 15–30px jumps. Short captions centre in the taller card.
-
-**Hero, from Mike:** "AI-powered **financial modeling and analytics** engineered for **subscription businesses.**" The longer first line wrapped to three lines at ≥1600px (777px needed, 774 available), so the Welcome scene's cap went 880 → 920px.
-
-**Share image** re-rendered with the new hero; its mock and renderer now live in `scripts/` (they had only survived in a temp folder) and the `og:image` URL carries `?v=2` to beat preview caches.
-
-**Files:** `src/scenes/Features.tsx`, `src/scenes/Welcome.tsx`, `src/components/Footer.tsx`, `src/index.css`, `scripts/og-image.html`, `scripts/og-image.mjs`, `scripts/prerender.mjs`, `public/og-image.png`, `CLAUDE.md`.
+Nothing changed in the app repo this session.
 
 ### Open Items / Next Steps
 - **Jon deploys the app** (master → Dev → Prod). Then this site's Privacy/Terms footer links and the app's new sign-in frame go live; do one real sign-in on production afterwards (it's the first production run of the passwordless system).
@@ -114,4 +108,3 @@ Two halves: step 3 (the app's sign-in pages in this site's frame, done in the ap
 - **Search Console:** submit `sitemap.xml` if not done; check Pages/Performance in a few days.
 - **Optional:** a tighter Reports screenshot (the wide strip renders small); a larger Services grab (original is 1106 px); a Google Sheets screenshot once the add-on exists.
 - **Undecided:** whether visible captions should carry more search terms (e.g. "cohort" in Retention Modeling, "churn" in Compare) — Matt didn't pick; the captions were rewritten since and still carry neither.
-- **Unanswered:** untrack `.DS_Store` and add it to `.gitignore`?

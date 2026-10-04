@@ -2,6 +2,11 @@
 
 Resolved or superseded Open Items, moved out of `CLAUDE.md` at handoff.
 
+## 2026-10-04 — from the 2026-09-29 session's Open Items
+
+- **Unanswered:** untrack `.DS_Store` and add it to `.gitignore`?
+  → **Done:** untracked and ignored (commit `a4aed0c`, 2026-10-04).
+
 ## 2026-09-29 — from the 2026-09-28 session's Open Items
 
 - **Step 3 — dress the app's sign-in pages in the site's frame** (Matt: "knock out 3 when we come back"). Lives in the **app repo** (`~/Code/subscriptix`, branch `CME-dev`; worth a heads-up to Jon, who built the auth flow): the allauth layouts (`accounts/templates/allauth/layouts/`) + `src/styles/_rail-and-auth.scss`. Add the menu card (Features · Pricing · Contact Us → `https://subscriptix.com/…`, **Login** shown active), nameplate linking to `https://subscriptix.com`, the breathing mark with the **exact numbers in "Design" above** (incl. the clock-phase script), the card drift-in, and the footer line. The menu then exists in two codebases — note it in both.
