@@ -2,6 +2,11 @@
 
 Resolved or superseded Open Items, moved out of `CLAUDE.md` at handoff.
 
+## 2026-10-07 — from the 2026-10-06 session's Open Items
+
+- **Search Console:** submit `sitemap.xml` if not done; check Pages/Performance.
+  → **Done:** Matt submitted `https://subscriptix.com/sitemap.xml` on 2026-10-07 and the Page indexing report was reviewed. Confirming the first fetch is a new open item.
+
 ## 2026-10-04 — from the 2026-09-29 session's Open Items
 
 - **Unanswered:** untrack `.DS_Store` and add it to `.gitignore`?

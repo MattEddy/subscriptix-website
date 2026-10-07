@@ -7,7 +7,7 @@ Marketing splash site for Subscriptix (subscription cohort projection tool). Rep
 - Tailwind CSS v4 (via `@tailwindcss/vite` plugin), plus hand-written component CSS in `src/index.css`
 - React Router DOM v7: scenes at `/`, `/features`, `/pricing`, `/contact`
 - Pre-rendered at build time (see SEO below), then hydrated in the browser
-- Deployed to Vercel (`vercel.json`: `cleanUrls`, `www` → apex redirect; no SPA rewrite — every scene is a real file, and anything else gets `404.html` with a 404 status)
+- Deployed to Vercel (`vercel.json`: `cleanUrls`, `trailingSlash: false` so `/features/` redirects to `/features`, `www` → apex redirect; no SPA rewrite — every scene is a real file, and anything else gets `404.html` with a 404 status)
 
 ## Design: floating-card scenes
 Matches the app's sign-in screen. A fixed **frame** (nameplate card upper left → home; menu card upper right: Features · Pricing · Contact Us · Login; small footer line) over a giant faded **breathing logomark**, with a **scene** of floating cards in the middle. No "About"/"Home" menu item — the nameplate is the way home.
@@ -55,6 +55,7 @@ public/
 ## SEO / AI search
 - The site is a client-rendered React app, so the build (`npm run build`) runs `scripts/prerender.mjs`: each scene is rendered to real HTML, so crawlers that don't run JavaScript (most AI crawlers) see the words. Features puts all eight captions in the HTML (each once; only the selected one visible) so every description is indexable.
 - Each page gets its own title, description, canonical URL (apex `https://subscriptix.com`), Open Graph + Twitter tags; the home page also carries JSON-LD (Organization + SoftwareApplication with `featureList`). Edit these in `src/seo.ts`.
+- **One address per page:** `www`, `http://`, `.html` and trailing-slash variants all 308 to the clean apex address, and each page's canonical tag points to itself. Before 2026-09-28 `www` and the apex both served the page with no redirect and no canonical tag, so Google's index started out preferring `www`.
 - Keep search terms accurate and in sentences — never hidden keyword lists (cloaking/spammy markup penalties). The visible purple term card on Welcome is where search terms belong.
 - **Share image** (`public/og-image.png`, the link preview in Slack/iMessage/LinkedIn): rendered from `scripts/og-image.html`, a mock of the Welcome headline card at 1200×630. When the hero changes, edit the mock's `<h1>` to match, run `node scripts/og-image.mjs`, and bump `?v=` on the `og:image` tag in `scripts/prerender.mjs` (previews are cached by URL). Currently `v=2` ("AI-powered", 2026-09-29).
 
@@ -89,33 +90,29 @@ public/
 
 ## Recent Session
 
-**Date:** 2026-10-06
+**Date:** 2026-10-07
 **Branch:** main
 
-An accessibility session that started here and covered all seven of Matt's websites. Everything is pushed and live.
+A short Search Console session. One config change, pushed and live.
 
-**How it started.** Staci sent Matt an Instagram post about California businesses being sued over websites that aren't ADA-compliant. Verdict given: the suits are real (about 5,100 nationwide in 2025; California's Unruh Act pays $4,000 per violation plus fees), but roughly 69% target e-commerce, and *Martinez v. Cot'n Wash* (Cal. Ct. App. 2022) gives online-only businesses a strong California defence. Exposure is low for every site; Buckethead is the most consumer-facing. Matt: "Better to be safe than sorry" — audit, then "Let's do it all", then "push everything live".
+**How it started.** Matt got a Google Search Console email, "New reason preventing your pages from being indexed: Duplicate, Google chose different canonical than user", and asked whether it was worth fixing. The Page indexing report showed 8 indexed, 9 not indexed across 5 reasons, for a site with four real pages.
 
-**The audit.** axe-core (WCAG 2.1 A/AA) on 30 live pages at desktop and phone widths, a keyboard Tab walk, and a reduced-motion check. No site had a lockout-type failure (unlabelled form, unreachable control, missing alt text); nearly everything was low-contrast text plus missing `<main>` landmarks and headings. The harness now lives in the `visual-verify` skill (`a11y-audit.mjs` for live sites, `a11y-local.mjs` for working trees).
+**What it turned out to be.** The one affected URL was the home page, `https://subscriptix.com/`. URL Inspection showed user-declared canonical `https://subscriptix.com/` and Google-selected canonical `https://www.subscriptix.com/`, last crawl Sep 29. Cause: until commit `c1321f7` (2026-09-28) `www` and the apex both served the page with no redirect and no canonical tag, and Google had settled on `www`; it crawled the apex hours after the redirect went in and has not revisited. Nothing is wrong on the site: canonicals, the `www`/`http`/`.html` redirects, the 404 and the sitemap all checked out live. It heals when Google re-crawls `www` and hits the 308. Matt was told to click Request Indexing and Validate Fix; expect days to a couple of weeks. Most of the other "not indexed" rows are probably old Squarespace addresses and URL variants (inferred from the counts, not seen).
 
-**This repo (commit `a2fd600`):**
-- `src/components/Footer.tsx`: `text-gray-500` → `text-gray-600`. The scanner could not judge this one (text over an image); measured by hand it was 3.3–3.7:1 over the mark, now 5.15:1 at worst.
-- `src/scenes/Features.tsx`: a visually hidden `<h1>` and `aria-hidden` on the visible label.
-- Both are recorded under Design above.
+**The one change (commit `02fdace`):** `vercel.json` gained `"trailingSlash": false`. `/features/` had been serving the page instead of redirecting; it and `/pricing/` now 308 to the clean address (verified live).
 
-**The other six sites**, each with its own commit on `main`: Survival Box (landmark, underlined legal links, focusable table; no wording changed), Bossword (ink text on green and red fills, darker green/red/gray text, landmarks, headings), Vivi (darker cuts of the brand blue and magenta, gradient words now deep blue, landmarks), matteddy.com (footer gray, distinct video titles, the Claude guide — edited in its `thinkings` master and copied over), Buckethead (hero location line, landmark), Sparrowstep (lighter highlight cyan, landmark, heading). Matt reviewed the edited sites locally in Chrome before saying push.
+**Sitemap.** Matt submitted `https://subscriptix.com/sitemap.xml` in Search Console. It showed "Couldn't fetch" with a blank "Last read", which is Search Console's usual placeholder before the first fetch. The file returns 200 as `application/xml` to a Googlebot user agent from this Mac (not proof of what the real Googlebot gets).
 
-**Two things worth knowing:**
-- **Sparrowstep is not connected to GitHub auto-deploy.** The push did nothing; it went live with `vercel --prod`.
-- **My polling for "is it live yet?" tripped Vercel's bot protection**, which then served this machine a 403 checkpoint on five sites. Their deployments are confirmed by GitHub's Vercel status, and the same commits scanned clean locally, but only Vivi and Sparrowstep were re-scanned live. Lesson is in the `web-gotchas` skill.
+**Also noticed:** the old Squarespace site is still live at `https://manatee-turtle-j8xn.squarespace.com/` (Google lists it as the home page's referring page). Its canonical tag points to `subscriptix.com`, so it is harmless to indexing, but it is a public stale copy.
 
 ### Open Items / Next Steps
-- **Re-scan the five sites that were behind the checkpoint** (Subscriptix, Buckethead, Survival Box, Bossword, matteddy.com): `node ~/.claude/skills/visual-verify/a11y-audit.mjs`, once. Expect one remaining contrast flag, the Bossword tagline, left at `#777` on purpose because it matches the wordmark's gray.
+- **Check Search Console in a day or two.** Sitemaps: if "Last read" has a date and the status is still "Couldn't fetch", that is a real failure; run URL Inspection → Test Live URL on the sitemap address and read what the real Googlebot got. Page indexing: the home page should move to indexed under the apex address within a couple of weeks; if Google-selected canonical is still `www` after that, look again.
+- **Old Squarespace site still public** at `manatee-turtle-j8xn.squarespace.com`. The subscription was cancelled long ago, so it may only need unpublishing or may lapse by itself. Take down the website only: the domain registration and DNS live in that Squarespace account.
+- **Re-scan the five sites that were behind the Vercel checkpoint** (Subscriptix, Buckethead, Survival Box, Bossword, matteddy.com): `node ~/.claude/skills/visual-verify/a11y-audit.mjs`, once. Expect one remaining contrast flag, the Bossword tagline, left at `#777` on purpose because it matches the wordmark's gray. (This site answered plain requests normally on 2026-10-07, so the checkpoint has cleared here.)
 - **The app's sign-in footer needs two one-line changes** in the app repo (`projection/components/auth_footer.html` and its styles), both through Jon's ~20-minute CI: the darker footer shade to match this site, and "© 2026 Subscriptix" → Sparrowstep LLC. Matt hasn't said when.
 - **Jon deploys the app** (master → Dev → Prod), if he hasn't yet. Then this site's Privacy/Terms footer links and the app's new sign-in frame go live; do one real sign-in on production afterwards (first production run of the passwordless system).
 - **Bossword website:** another session's uncommitted work is still in that repo (`friend/`, `vercel.json`, the app-site-association file). Its new `friend/` page needs a `<main>` and an `<h1>` like the other pages. The site's ink-on-green buttons now differ from the app's white-on-green ones.
-- **Not covered by the audit:** a real screen-reader pass, captions on the four videos at `matteddy.com/marketing`, form-error states, and Sparrowstep's slight sideways scroll on a phone (421px of content in a 390px screen).
+- **Not covered by the accessibility audit (2026-10-06):** a real screen-reader pass, captions on the four videos at `matteddy.com/marketing`, form-error states, and Sparrowstep's slight sideways scroll on a phone (421px of content in a 390px screen).
 - **Delete the old Google Apps Script deployment** (script.google.com) — the SES form is confirmed working.
-- **Search Console:** submit `sitemap.xml` if not done; check Pages/Performance.
 - **Optional:** a tighter Reports screenshot; a larger Services grab (original is 1106 px); a Google Sheets screenshot once the add-on exists.
 - **Undecided:** whether visible captions should carry more search terms (e.g. "cohort" in Retention Modeling, "churn" in Compare).
