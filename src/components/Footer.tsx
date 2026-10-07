@@ -2,7 +2,7 @@
 // projection/components/auth_footer.html) — change one, change both.
 export default function Footer() {
   return (
-    <footer className="relative z-10 pb-6 text-center text-[13px] text-gray-500">
+    <footer className="relative z-10 pb-6 text-center text-[13px] text-gray-600">
       <a href="mailto:info@subscriptix.com" className="hover:text-gray-800 transition-colors">
         info@subscriptix.com
       </a>

@@ -156,8 +156,9 @@ export default function Features() {
 
   return (
     <div className="features">
+      <h1 className="sr-only">Features</h1>
       <nav className="features__rail" aria-label="Features">
-        <p className="features__label card scene-card" style={at(0)}>
+        <p className="features__label card scene-card" style={at(0)} aria-hidden="true">
           Features
         </p>
         {features.map((f, i) => (

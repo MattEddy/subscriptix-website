@@ -18,6 +18,8 @@ Matches the app's sign-in screen. A fixed **frame** (nameplate card upper left �
 - Login fades the scene out (`html.leaving`) before leaving for the app; a `pageshow` handler clears it so Back never restores a blank page
 - **The breathing mark (shared contract with the app's sign-in page, which should match it):** `.bg-mark` is `80vw` wide, `scale(0.708)` ↔ `scale(1)`, opacity `0.2`, `20s ease-in-out infinite alternate` (a 40 s cycle), phase keyed to the clock via `animation-delay: var(--mark-delay)`, where an inline script in `index.html` sets `--mark-delay = -((Date.now()/1000) % 40)s` before first paint
 - **The app's sign-in pages wear this same frame** (app repo `projection/components/auth_frame.html` + `auth_footer.html`, styles in `src/styles/_rail-and-auth.scss`, built 2026-09-28). **The menu, the footer line, the mark numbers and the card shadow therefore exist in two codebases — change one, change both.** The app fades its middle out before leaving for the site, mirroring Login's fade here. The Login button points at `app.subscriptix.com/login/?next=/`, which the app redirects to its real sign-in page.
+- **Footer text is `text-gray-600`, not lighter:** the footer line is the only text that sits directly on the mark, and over the mark's purple `gray-500` measured 3.3:1 (WCAG AA needs 4.5). `gray-600` is 5.15:1 at worst (2026-10-06 accessibility audit). The app's `auth_footer` needs the same shade.
+- **Features has a visually hidden `<h1>`** (`sr-only`); the visible "Features" label is `aria-hidden` because it is `display: none` on phones.
 - Card shadow: `0 1px 2px / 0 8px 20px / 0 20px 40px` in `rgba(10,11,15, .09/.105/.105)`; solid button `.button-solid` (`#055cda`)
 
 ## Structure
