@@ -89,24 +89,33 @@ public/
 
 ## Recent Session
 
-**Date:** 2026-10-04 (started 2026-09-30)
+**Date:** 2026-10-06
 **Branch:** main
 
-A short copy session. Both changes are pushed and live.
+An accessibility session that started here and covered all seven of Matt's websites. Everything is pushed and live.
 
-**Features copy (`src/scenes/Features.tsx`, commit `5adc99f`):**
-- **Connect a Service** is now Matt's wording: "**Easily import data directly from most major billing platforms.** Then keep your models up-to-date with ongoing, automatic syncing." The first sentence keeps the bold, as the old first sentence had, so Connect is still one of the five bolded phrases. The old "Link your account…" sentence and the "Subscriptix gathers your transaction history" clause are gone.
-- **Import Files:** "mapping every column" → "**automatically** mapping every column", inside the existing bold phrase.
-- The layered caption cards absorb length changes, so these edits needed no layout work (see Design → Features above).
+**How it started.** Staci sent Matt an Instagram post about California businesses being sued over websites that aren't ADA-compliant. Verdict given: the suits are real (about 5,100 nationwide in 2025; California's Unruh Act pays $4,000 per violation plus fees), but roughly 69% target e-commerce, and *Martinez v. Cot'n Wash* (Cal. Ct. App. 2022) gives online-only businesses a strong California defence. Exposure is low for every site; Buckethead is the most consumer-facing. Matt: "Better to be safe than sorry" — audit, then "Let's do it all", then "push everything live".
 
-**`.DS_Store` untracked (commit `a4aed0c`).** Matt asked what it was and whether to delete it. It's the Finder's per-folder view-settings file and Finder recreates it, so deleting it wouldn't stick. Instead the two tracked copies were removed from git (`git rm --cached`, which leaves them on disk) and `.DS_Store` was added to `.gitignore`.
+**The audit.** axe-core (WCAG 2.1 A/AA) on 30 live pages at desktop and phone widths, a keyboard Tab walk, and a reduced-motion check. No site had a lockout-type failure (unlabelled form, unreachable control, missing alt text); nearly everything was low-contrast text plus missing `<main>` landmarks and headings. The harness now lives in the `visual-verify` skill (`a11y-audit.mjs` for live sites, `a11y-local.mjs` for working trees).
 
-Nothing changed in the app repo this session.
+**This repo (commit `a2fd600`):**
+- `src/components/Footer.tsx`: `text-gray-500` → `text-gray-600`. The scanner could not judge this one (text over an image); measured by hand it was 3.3–3.7:1 over the mark, now 5.15:1 at worst.
+- `src/scenes/Features.tsx`: a visually hidden `<h1>` and `aria-hidden` on the visible label.
+- Both are recorded under Design above.
+
+**The other six sites**, each with its own commit on `main`: Survival Box (landmark, underlined legal links, focusable table; no wording changed), Bossword (ink text on green and red fills, darker green/red/gray text, landmarks, headings), Vivi (darker cuts of the brand blue and magenta, gradient words now deep blue, landmarks), matteddy.com (footer gray, distinct video titles, the Claude guide — edited in its `thinkings` master and copied over), Buckethead (hero location line, landmark), Sparrowstep (lighter highlight cyan, landmark, heading). Matt reviewed the edited sites locally in Chrome before saying push.
+
+**Two things worth knowing:**
+- **Sparrowstep is not connected to GitHub auto-deploy.** The push did nothing; it went live with `vercel --prod`.
+- **My polling for "is it live yet?" tripped Vercel's bot protection**, which then served this machine a 403 checkpoint on five sites. Their deployments are confirmed by GitHub's Vercel status, and the same commits scanned clean locally, but only Vivi and Sparrowstep were re-scanned live. Lesson is in the `web-gotchas` skill.
 
 ### Open Items / Next Steps
-- **Jon deploys the app** (master → Dev → Prod). Then this site's Privacy/Terms footer links and the app's new sign-in frame go live; do one real sign-in on production afterwards (it's the first production run of the passwordless system).
-- **App footer still says "© 2026 Subscriptix"** — the site says Sparrowstep LLC. One line in the app's `projection/components/auth_footer.html`, but it's a PR through Jon's ~20-minute CI; Matt hasn't said when.
+- **Re-scan the five sites that were behind the checkpoint** (Subscriptix, Buckethead, Survival Box, Bossword, matteddy.com): `node ~/.claude/skills/visual-verify/a11y-audit.mjs`, once. Expect one remaining contrast flag, the Bossword tagline, left at `#777` on purpose because it matches the wordmark's gray.
+- **The app's sign-in footer needs two one-line changes** in the app repo (`projection/components/auth_footer.html` and its styles), both through Jon's ~20-minute CI: the darker footer shade to match this site, and "© 2026 Subscriptix" → Sparrowstep LLC. Matt hasn't said when.
+- **Jon deploys the app** (master → Dev → Prod), if he hasn't yet. Then this site's Privacy/Terms footer links and the app's new sign-in frame go live; do one real sign-in on production afterwards (first production run of the passwordless system).
+- **Bossword website:** another session's uncommitted work is still in that repo (`friend/`, `vercel.json`, the app-site-association file). Its new `friend/` page needs a `<main>` and an `<h1>` like the other pages. The site's ink-on-green buttons now differ from the app's white-on-green ones.
+- **Not covered by the audit:** a real screen-reader pass, captions on the four videos at `matteddy.com/marketing`, form-error states, and Sparrowstep's slight sideways scroll on a phone (421px of content in a 390px screen).
 - **Delete the old Google Apps Script deployment** (script.google.com) — the SES form is confirmed working.
-- **Search Console:** submit `sitemap.xml` if not done; check Pages/Performance in a few days.
-- **Optional:** a tighter Reports screenshot (the wide strip renders small); a larger Services grab (original is 1106 px); a Google Sheets screenshot once the add-on exists.
-- **Undecided:** whether visible captions should carry more search terms (e.g. "cohort" in Retention Modeling, "churn" in Compare) — Matt didn't pick; the captions were rewritten since and still carry neither.
+- **Search Console:** submit `sitemap.xml` if not done; check Pages/Performance.
+- **Optional:** a tighter Reports screenshot; a larger Services grab (original is 1106 px); a Google Sheets screenshot once the add-on exists.
+- **Undecided:** whether visible captions should carry more search terms (e.g. "cohort" in Retention Modeling, "churn" in Compare).
